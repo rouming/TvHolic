@@ -1,0 +1,16 @@
+TvHolic - is an attempt to implement DLNA compatible media server to
+watch my favourite *.avi files on my Philips tv.
+
+Last several years I use godddamned PS3 Media Server.
+I hate it so much! I hate it so much!
+
+TvHolic must do several things to be my favourite media server:
+
+1. Order files (Hey, PS3MS, kill yourself!)
+2. Mux subtitles without transcoding (Fuck you, PS3MS)
+3. Not to eat 1GB of RAM while iterating in folder (PS3MS, burn in hell!)
+4. Not to spawn thread on every event (PS3MS, you know what to do!)
+5. Transcode everything using ffmpeg or mencoder (Ok, PS3MS, you does this)
+
+Actually, the main purpose of this 'yet another DLNA compatible app' is
+to be as small as possible and to consume little ammount of resources (RAM, CPU).
