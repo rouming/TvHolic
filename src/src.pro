@@ -9,6 +9,7 @@ LEVEL = ..
 TEMPLATE = app
 
 HEADERS += \
+           TvHolic.h \
            Config.h \
            Encoder.h \
            HttpSession.h \
@@ -17,7 +18,7 @@ HEADERS += \
            UpnpServer.h \
 
 SOURCES += \
-           Main.cpp \
+           TvHolic.cpp \
            Config.cpp \
            Encoder.cpp \
            HttpSession.cpp \
