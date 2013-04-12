@@ -2,6 +2,7 @@
 #define __UPNP_SERVER_H__
 
 #include <QUdpSocket>
+#include <QTimer>
 
 class UpnpServer : public QObject
 {
@@ -18,12 +19,20 @@ public:
 	bool init();
 	void stop();
 
+private:
+	QString buildMessage(const QString& nt, const QString& msg);
+
+	void sendSsdpAlive();
+	void sendSsdpByeBye();
+
 private slots:
 	void onReadyRead();
+	void onTimeout();
 
 private:
 	QUdpSocket m_udpSocket;
 	QByteArray m_datagram;
+	QTimer m_aliveTimer;
 };
 
 #endif //__UPNP_SERVER_H__
