@@ -2,7 +2,8 @@
 
 HttpSession::HttpSession(int sock, QMutex* mutex) :
 	Job(mutex),
-	m_tcpSocket(this)
+	m_tcpSocket(this),
+	m_transcoder(NULL)
 {
 	QObject::connect(&m_tcpSocket,
 					 SIGNAL(readyRead()),
@@ -36,15 +37,22 @@ void HttpSession::onReadyRead()
 		   (quint64)QThread::currentThreadId(),
 		   qPrintable(str));
 
-	m_tcpSocket.write(ba.constData(), ba.size());
+	//m_tcpSocket.write(ba.constData(), ba.size());
+	m_transcoder = new MencoderTranscoder(m_tcpSocket, 256<<10, 1<<20);
+	m_transcoder->startTranscoding();
 }
 
 void HttpSession::onBytesWritten(qint64 wr)
 {
 	printf("bytes written %lld\n", wr);
+	if (m_transcoder)
+		m_transcoder->process();
 }
 
 void HttpSession::onDisconnected()
 {
+	if (m_transcoder)
+		delete m_transcoder;
+
 	deleteLater();
 }

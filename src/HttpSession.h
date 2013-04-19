@@ -4,6 +4,7 @@
 #include <QTcpSocket>
 #include "TcpServer.h"
 #include "ThreadPool.h"
+#include "MencoderTranscoder.h"
 
 class HttpSession : public QObject,
 					public Job
@@ -20,6 +21,7 @@ private slots:
 
 private:
 	QTcpSocket m_tcpSocket;
+	MencoderTranscoder* m_transcoder;
 };
 
 #endif //__HTTP_SESSION_H__

@@ -62,7 +62,7 @@ static void processDatagram(const QHostAddress& sender, quint16 port,
 	(void)datagram;
 
 	//XXX
-	//return;
+	return;
 
 	printf("\nsender %s, port %u, datagram sz %u\n",
 		   qPrintable(sender.toString()),
