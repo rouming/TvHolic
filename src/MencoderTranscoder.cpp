@@ -63,25 +63,28 @@ void MencoderTranscoder::terminateTranscoding()
 
 Transcoder::State MencoderTranscoder::process()
 {
-	if (m_state == Transcoding) {
-		quint32 written = m_tcpSocket.bytesToWrite();
-		quint32 can_rd = m_mencoder.stdoutBytes();
-		quint32 can_wr;
+	quint32 written = m_tcpSocket.bytesToWrite();
+	quint32 can_rd = m_mencoder.stdoutBytes();
+	quint32 can_wr;
 
-		// Socket is already full
-		if (written >= m_maxThreshold)
-			return m_state;
-		// Not enough data
-		if (can_rd <= m_minThreshold)
-			return m_state;
+	// Nothing to do
+	if (can_rd == 0)
+		return m_state;
 
-		can_wr = m_maxThreshold - written;
-		can_rd = can_rd - m_minThreshold;
+	// Socket is already full
+	if (written >= m_maxThreshold)
+		return Transcoding;
 
-		m_mencoder.readFromStdout(qMin(can_wr, can_rd), &m_tcpSocket);
-	}
+	// Not enough data if process is still alive
+	if (can_rd <= m_minThreshold && m_mencoder.isRunning())
+		return Transcoding;
 
-	return m_state;
+	can_wr = m_maxThreshold - written;
+	can_rd = (can_rd <= m_minThreshold ? can_rd : can_rd - m_minThreshold);
+
+	m_mencoder.readFromStdout(qMin(can_wr, can_rd), &m_tcpSocket);
+
+	return Transcoding;
 }
 
 void MencoderTranscoder::onStarted()
@@ -96,6 +99,7 @@ void MencoderTranscoder::onFinished(int exitCode, bool crashed)
 		qWarning("Error: mencoder process exited with crash");
 	}
 	m_state = Stopped;
+	process();
 }
 
 void MencoderTranscoder::onStdout()
