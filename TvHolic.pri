@@ -15,6 +15,10 @@ linux-*:DEFINES += "_LIN_=1"
 contains(QT_ARCH, x86_64):DEFINES += "_AMD64_"
 else::DEFINES += "_X86_"
 
+# Force using 64 bit filesize/offset
+# since they are 32 bit by default on linux
+linux-*:DEFINES += _FILE_OFFSET_BITS=64
+
 !isEmpty(BUILD_NAME) {
      BUILDDIR = $$lower($$join(BUILD_NAME, "", $$LEVEL/build/))
      DESTDIR = $$LEVEL/build
