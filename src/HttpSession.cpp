@@ -1,4 +1,6 @@
 #include "HttpSession.h"
+#include "MencoderTranscoder.h"
+#include "AsIsTranscoder.h"
 
 HttpSession::HttpSession(int sock, QMutex* mutex) :
 	Job(mutex),
@@ -38,7 +40,8 @@ void HttpSession::onReadyRead()
 		   qPrintable(str));
 
 	//m_tcpSocket.write(ba.constData(), ba.size());
-	m_transcoder = new MencoderTranscoder(m_tcpSocket, 256<<10, 1<<20);
+	//m_transcoder = new MencoderTranscoder(m_tcpSocket, 256<<10, 1<<20);
+	m_transcoder = new AsIsTranscoder(m_tcpSocket);
 	m_transcoder->startTranscoding();
 }
 
