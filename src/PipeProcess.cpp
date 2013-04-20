@@ -24,10 +24,10 @@ struct ProcessManager {
 
 static ProcessManager s_mng;
 
-#define EINTR_LOOP(var, cmd)                    \
-    do {                                        \
-        var = cmd;                              \
-    } while (var == -1 && errno == EINTR)
+#define EINTR_LOOP(var, cmd)					\
+	do {										\
+		var = cmd;								\
+	} while (var == -1 && errno == EINTR)
 
 static quint32 round_buffer_size(quint32 buffer_size)
 {
@@ -47,30 +47,30 @@ static quint32 round_buffer_size(quint32 buffer_size)
 
 static inline qint32 safe_write(int fd, const void *data, qint32 len)
 {
-    qint32 ret = 0;
-    EINTR_LOOP(ret, ::write(fd, data, len));
-    return ret;
+	qint32 ret = 0;
+	EINTR_LOOP(ret, ::write(fd, data, len));
+	return ret;
 }
 
 static inline qint32 safe_read(int fd, void *data, qint32 len)
 {
-    qint32 ret = 0;
-    EINTR_LOOP(ret, ::read(fd, data, len));
-    return ret;
+	qint32 ret = 0;
+	EINTR_LOOP(ret, ::read(fd, data, len));
+	return ret;
 }
 
 static inline int safe_close(int fd)
 {
-    int ret;
-    EINTR_LOOP(ret, ::close(fd));
-    return ret;
+	int ret;
+	EINTR_LOOP(ret, ::close(fd));
+	return ret;
 }
 
 static inline int safe_dup2(int fd1, int fd2)
 {
-    int ret;
-    EINTR_LOOP(ret, ::dup2(fd1, fd2));
-    return ret;
+	int ret;
+	EINTR_LOOP(ret, ::dup2(fd1, fd2));
+	return ret;
 }
 
 static inline int safe_pipe(int pipes[2], int flags)
@@ -79,14 +79,14 @@ static inline int safe_pipe(int pipes[2], int flags)
 	if (err != 0)
 		return err;
 
-    ::fcntl(pipes[0], F_SETFD, FD_CLOEXEC);
-    ::fcntl(pipes[1], F_SETFD, FD_CLOEXEC);
+	::fcntl(pipes[0], F_SETFD, FD_CLOEXEC);
+	::fcntl(pipes[1], F_SETFD, FD_CLOEXEC);
 
-    // set non-block too?
-    if (flags & O_NONBLOCK) {
-        ::fcntl(pipes[0], F_SETFL, ::fcntl(pipes[0], F_GETFL) | O_NONBLOCK);
-        ::fcntl(pipes[1], F_SETFL, ::fcntl(pipes[1], F_GETFL) | O_NONBLOCK);
-    }
+	// set non-block too?
+	if (flags & O_NONBLOCK) {
+		::fcntl(pipes[0], F_SETFL, ::fcntl(pipes[0], F_GETFL) | O_NONBLOCK);
+		::fcntl(pipes[1], F_SETFL, ::fcntl(pipes[1], F_GETFL) | O_NONBLOCK);
+	}
 
 	return 0;
 }
@@ -94,9 +94,9 @@ static inline int safe_pipe(int pipes[2], int flags)
 static bool sigchild_lock()
 {
 	sigset_t mask;
-    sigemptyset(&mask);
-    sigaddset(&mask, SIGCHLD);
-    if (sigprocmask(SIG_BLOCK, &mask, &s_mng.mask) == -1)
+	sigemptyset(&mask);
+	sigaddset(&mask, SIGCHLD);
+	if (sigprocmask(SIG_BLOCK, &mask, &s_mng.mask) == -1)
 		return false;
 
 	s_mng.mutex.lock();
@@ -105,7 +105,7 @@ static bool sigchild_lock()
 
 static bool sigchild_unlock()
 {
-    if (sigprocmask(SIG_SETMASK, &s_mng.mask, NULL) == -1)
+	if (sigprocmask(SIG_SETMASK, &s_mng.mask, NULL) == -1)
 		return false;
 
 	s_mng.mutex.unlock();
@@ -115,21 +115,21 @@ static bool sigchild_unlock()
 void sigchld_handler(int signum)
 {
 	pid_t p;
-    int status;
+	int status;
 	QMutexLocker locker(&s_mng.mutex);
 
-    while ((p = ::waitpid(-1, &status, WNOHANG)) != -1) {
+	while ((p = ::waitpid(-1, &status, WNOHANG)) != -1) {
 		QHash<pid_t, PipeProcess*>::iterator it = s_mng.pids.find(p);
 		if (it == s_mng.pids.end())
 			continue;
 		PipeProcess* proc = it.value();
 		proc->__childDied(status);
-    }
+	}
 
-    // load it as volatile
-    void (*oldAction)(int) = ((volatile struct sigaction *)&s_mng.sa_old_sigchld_handler)->sa_handler;
-    if (oldAction && oldAction != SIG_IGN)
-        oldAction(signum);
+	// load it as volatile
+	void (*oldAction)(int) = ((volatile struct sigaction *)&s_mng.sa_old_sigchld_handler)->sa_handler;
+	if (oldAction && oldAction != SIG_IGN)
+		oldAction(signum);
 }
 
 static void init_child_sigaction()
