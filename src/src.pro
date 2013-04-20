@@ -18,6 +18,7 @@ HEADERS += \
            UpnpServer.h \
            PipeProcess.h \
            MencoderTranscoder.h \
+           AsIsTranscoder.h \
 
 SOURCES += \
            TvHolic.cpp \
@@ -29,6 +30,6 @@ SOURCES += \
            UpnpServer.cpp \
            PipeProcess.cpp \
            MencoderTranscoder.cpp \
-
+           AsIsTranscoder.cpp \
 
 RESOURCES += $$LEVEL/TvHolic.qrc
