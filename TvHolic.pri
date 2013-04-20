@@ -19,6 +19,12 @@ else::DEFINES += "_X86_"
 # since they are 32 bit by default on linux
 linux-*:DEFINES += _FILE_OFFSET_BITS=64
 
+# Treat all warnings as errors
+unix {
+     QMAKE_CFLAGS += -Werror
+     QMAKE_CXXFLAGS += -Werror
+}
+
 !isEmpty(BUILD_NAME) {
      BUILDDIR = $$lower($$join(BUILD_NAME, "", $$LEVEL/build/))
      DESTDIR = $$LEVEL/build
