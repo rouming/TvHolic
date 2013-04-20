@@ -1,9 +1,13 @@
+#include <QDateTime>
+
 #include "UpnpServer.h"
+#include "Global.h"
 
 const static QString SSDP_ALIVE  = "ssdp:alive";
 const static QString SSDP_BYEBYE = "ssdp:byebye";
 
-UpnpServer::UpnpServer()
+UpnpServer::UpnpServer() :
+	m_tcpPort(0)
 {
 	bool res;
 	res = QObject::connect(&m_udpSocket,
@@ -22,7 +26,7 @@ UpnpServer::~UpnpServer()
 	stop();
 }
 
-bool UpnpServer::init()
+bool UpnpServer::init(quint16 tcpPort)
 {
 	bool res;
 	res = m_udpSocket.bind(UPNP_PORT,
@@ -40,6 +44,7 @@ bool UpnpServer::init()
 	}
 
 	m_aliveTimer.start(10000);
+	m_tcpPort = tcpPort;
 
 	return true;
 
@@ -54,15 +59,13 @@ void UpnpServer::stop()
 
 	m_aliveTimer.stop();
 	m_udpSocket.close();
+	m_tcpPort = 0;
 }
 
-static void processDatagram(const QHostAddress& sender, quint16 port,
+void processDatagram(const QHostAddress& sender, quint16 port,
 							const QByteArray& datagram, quint32 sz)
 {
 	(void)datagram;
-
-	//XXX
-	return;
 
 	printf("\nsender %s, port %u, datagram sz %u\n",
 		   qPrintable(sender.toString()),
@@ -71,28 +74,54 @@ static void processDatagram(const QHostAddress& sender, quint16 port,
 	printf("-------------------------------\n");
 	printf("%.*s", sz,  (const char*)datagram.constData());
 	printf("-------------------------------\n");
-
 }
+
 
 void UpnpServer::onReadyRead()
 {
 	while (m_udpSocket.hasPendingDatagrams()) {
-		QHostAddress sender;
-		quint16 senderPort;
+		QHostAddress remoteAddr;
+		quint16 remotePort;
 		qint64 sz = m_udpSocket.pendingDatagramSize();
 		qint64 rd;
+		QByteArray ba;
 		Q_ASSERT(sz > 0);
 
 		if (m_datagram.size() < sz)
 			m_datagram.resize(sz);
 
 		rd = m_udpSocket.readDatagram(m_datagram.data(), m_datagram.size(),
-									  &sender, &senderPort);
+									  &remoteAddr, &remotePort);
 		if (rd != sz) {
 			qFatal("Error: it is impossible! rd %lld != sz %lld", rd, sz);
 			return;
 		}
-		processDatagram(sender, senderPort, m_datagram, (quint32)rd);
+
+		ba = QByteArray::fromRawData(m_datagram.constData(), rd);
+
+		//XXX
+#if 0
+		processDatagram(remoteAddr, remotePort,
+						 ba, (quint32)rd);
+#endif
+
+		if (!ba.startsWith("M-SEARCH"))
+			continue;
+
+		if (ba.indexOf("urn:schemas-upnp-org:service:ContentDirectory:1") > 0)
+			sendSsdpDiscover(remoteAddr, remotePort,
+							 "urn:schemas-upnp-org:service:ContentDirectory:1");
+		else if (ba.indexOf("upnp:rootdevice") > 0)
+			sendSsdpDiscover(remoteAddr, remotePort,
+							 "upnp:rootdevice");
+		else if (ba.indexOf("urn:schemas-upnp-org:device:MediaServer:1") > 0)
+			sendSsdpDiscover(remoteAddr, remotePort,
+							 "urn:schemas-upnp-org:device:MediaServer:1");
+		else if (ba.indexOf("ssdp:all") > 0)
+			sendSsdpDiscover(remoteAddr, remotePort,
+							 "urn:schemas-upnp-org:device:MediaServer:1");
+		else if (ba.indexOf(Global::getUsn()) > 0)
+			sendSsdpDiscover(remoteAddr, remotePort, Global::getUsn());
 	}
 }
 
@@ -105,30 +134,29 @@ QString UpnpServer::buildMessage(const QString& nt,
 								 const QString& msg)
 {
 	QString s;
+	QString usn = Global::getUsn();
+	QString serverHost = Global::getDefaultIPv4LocalAddr().toString();
 
 	s.append(QString("NOTIFY * HTTP/1.1\r\n"));
-	s.append(QString("HOST: %1:%2").
+	s.append(QString("HOST: %1:%2\r\n").
 			 arg(QHostAddress(UPNP_GROUP).toString()).
 			 arg(UPNP_PORT));
 	s.append(QString("NT: %1\r\n").arg(nt));
 	s.append(QString("NTS: %1\r\n").arg(msg));
 
 	if (msg == SSDP_ALIVE) {
-		//XXX
-		s.append(QString("LOCATION: http://%1:%2/description/fetch\r\n").
-				 arg("m_host").
-				 arg("m_port"));
+		s.append(QString("LOCATION: http://%1:%2/%3\r\n").
+				 arg(serverHost).
+				 arg(m_tcpPort).
+				 arg(Global::getDescriptionXmlUrl()));
 		s.append(QString("CACHE-CONTROL: max-age=1800\r\n"));
 		s.append(QString("SERVER: SomeOS, UPnP/1.0, TvHolic/%1\r\n").
 				 arg(TVHOLIC_VERSION));
 	}
 
 
-	//XXX
-	s.append(QString("USN: %1").arg("m_usn"));
-
-	//XXX
-	if (nt != "m_usn")
+	s.append(QString("USN: %1").arg(usn));
+	if (nt != usn)
 		s.append(QString("::%1").arg(nt));
 
 	s.append(QString("\r\n"));
@@ -154,8 +182,7 @@ void UpnpServer::sendSsdpAlive()
 
 	msg1 = buildMessage("upnp:rootdevice",
 						SSDP_ALIVE);
-	//XXX
-	msg2 = buildMessage("usn",
+	msg2 = buildMessage(Global::getUsn(),
 						SSDP_ALIVE);
 	msg3 = buildMessage("urn:schemas-upnp-org:device:MediaServer:1",
 						SSDP_ALIVE);
@@ -206,4 +233,35 @@ void UpnpServer::sendSsdpByeBye()
 	m_udpSocket.writeDatagram(msg4.toAscii(),
 							  QHostAddress(UPNP_GROUP),
 							  UPNP_PORT);
+}
+
+void UpnpServer::sendSsdpDiscover(const QHostAddress& addr,
+								  quint16 port,
+								  const QString& msg)
+{
+	QString s;
+	QString usn = Global::getUsn();
+	QString serverHost = Global::getDefaultIPv4LocalAddr().toString();
+	QString dateTime = QDateTime::currentDateTime().toString(
+		"ddd, dd MMM yyyy hh:mm:ss");
+
+	if (msg != usn)
+		usn.append(QString("::%1").arg(msg));
+
+	s.append(QString("HTTP/1.1 200 OK\r\n"));
+	s.append(QString("CACHE-CONTROL: max-age=1200\r\n"));
+	s.append(QString("DATE: %1 UTC\r\n").arg(dateTime));
+	s.append(QString("LOCATION: http://%1:%2/%3\r\n").
+			 arg(serverHost).
+			 arg(m_tcpPort).
+			 arg(Global::getDescriptionXmlUrl()));
+	s.append(QString("SERVER: SomeOS, UPnP/1.0, TvHolic/%1\r\n").
+			 arg(TVHOLIC_VERSION));
+	s.append(QString("ST: %1\r\n").arg(msg));
+	s.append(QString("EXT: \r\n"));
+	s.append(QString("USN: %1\r\n").arg(usn));
+	s.append(QString("Content-Length: 0\r\n"));
+	s.append(QString("\r\n"));
+
+	m_udpSocket.writeDatagram(s.toAscii(), addr, port);
 }

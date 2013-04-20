@@ -11,6 +11,7 @@ TEMPLATE = app
 HEADERS += \
            TvHolic.h \
            Config.h \
+           Global.h \
            Encoder.h \
            HttpSession.h \
            TcpServer.h \
@@ -23,6 +24,7 @@ HEADERS += \
 SOURCES += \
            TvHolic.cpp \
            Config.cpp \
+           Global.cpp \
            Encoder.cpp \
            HttpSession.cpp \
            TcpServer.cpp \

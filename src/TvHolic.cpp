@@ -12,13 +12,16 @@ TvHolic::~TvHolic()
 bool TvHolic::init()
 {
 	bool res;
-	res = m_tcpServer.listen();
+	quint16 port;
+	res = m_tcpServer.listen(&port);
 	if (!res) {
 		qWarning("Error: can't listen on tcp server");
 		goto err;
 	}
 
-	res = m_upnpServer.init();
+	qDebug("Upnp/Http server on port: %u\n", port);
+
+	res = m_upnpServer.init(port);
 	if (!res) {
 		qWarning("Error: can't init upnp server");
 		goto err;

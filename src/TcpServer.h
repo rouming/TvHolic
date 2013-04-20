@@ -11,7 +11,7 @@ public:
 	TcpServer();
 	~TcpServer();
 
-	bool listen();
+	bool listen(quint16* port);
 	void stop();
 
 private:

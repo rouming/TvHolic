@@ -16,7 +16,7 @@ public:
 	UpnpServer();
 	~UpnpServer();
 
-	bool init();
+	bool init(quint16 tcpPort);
 	void stop();
 
 private:
@@ -24,6 +24,9 @@ private:
 
 	void sendSsdpAlive();
 	void sendSsdpByeBye();
+	void sendSsdpDiscover(const QHostAddress& addr,
+						  quint16 port,
+						  const QString& msg);
 
 private slots:
 	void onReadyRead();
@@ -33,6 +36,7 @@ private:
 	QUdpSocket m_udpSocket;
 	QByteArray m_datagram;
 	QTimer m_aliveTimer;
+	quint16 m_tcpPort;
 };
 
 #endif //__UPNP_SERVER_H__

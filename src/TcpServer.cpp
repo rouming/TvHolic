@@ -10,7 +10,7 @@ TcpServer::~TcpServer()
 	stop();
 }
 
-bool TcpServer::listen()
+bool TcpServer::listen(quint16* port)
 {
 	bool res;
 	res = QTcpServer::listen();
@@ -25,10 +25,7 @@ bool TcpServer::listen()
 		goto err;
 	}
 
-	//XXX
-	printf("SERV PORT: %d\n",
-		   serverPort());
-
+	*port = serverPort();
 
 	return true;
 
