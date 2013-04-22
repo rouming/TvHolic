@@ -30,6 +30,8 @@
 #include <QtDebug>
 #include <QIODevice>
 #include <QTcpSocket>
+#include <QNetworkInterface>
+#include <QNetworkAddressEntry>
 #include <time.h>
 #include "brisanetwork.h"
 #include "brisaconfig.h"
@@ -65,15 +67,22 @@ QString getValidIP() {
     }
     return ip;
 #else*/
-    foreach(QHostAddress addressEntry , QNetworkInterface::allAddresses() )
-        {
-            QString address = addressEntry.toString();
-            if (!(isLoopbackIPv4Address(address)) && !(isLoopbackIPv6Address(
-                    address)) && !(isPromiscuousIPv4Address(address))
-                    && !(isPromiscuousIPv6Address(address))) {
-                return address;
-            }
+    QList<QNetworkInterface> nifs = QNetworkInterface::allInterfaces();
+    foreach(QNetworkInterface nif, nifs) {
+        QNetworkInterface::InterfaceFlags flags = nif.flags();
+        if (!(flags & QNetworkInterface::IsUp &&
+              flags & QNetworkInterface::IsRunning &&
+              flags & QNetworkInterface::CanMulticast))
+            continue;
+
+        QList<QNetworkAddressEntry> aes = nif.addressEntries();
+        foreach(QNetworkAddressEntry ae, aes) {
+            QHostAddress addr = ae.ip();
+            if (addr.protocol() != QAbstractSocket::IPv4Protocol)
+                continue;
+            return addr.toString();
         }
+    }
     qDebug()
             << "Couldn't acquire a non loopback IP  address,returning 127.0.0.1.";
     return "127.0.0.1";
