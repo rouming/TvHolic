@@ -41,6 +41,7 @@ BrisaEventController::BrisaEventController(
         BrisaWebService(parent),
         variableList(stateVariableList)
 {
+	(void)sessionManager;
     udpSocket.bind(QHostAddress("239.255.255.246"), 7900);
 }
 

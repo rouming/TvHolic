@@ -77,6 +77,7 @@ void BrisaEventProxy::unsubscribe(void) {
     QHttpRequestHeader *unsubscribeReq = getUnsubscriptionRequest();
     http->setHost(host, port);
     int unsubId = http->request(*unsubscribeReq);
+	(void)unsubId;
     //qDebug() << unsubId << " unsubscription: " << unsubscribeReq->toString();
     delete unsubscribeReq;
 }

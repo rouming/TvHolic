@@ -67,6 +67,7 @@ QMAKE_EXTRA_TARGETS += astyle
     }
 }
 QMAKE_CLEAN += *.gcda *.gcno
+QMAKE_CXXFLAGS += -Werror
 
 contains(CONFIG, coverage) {
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
