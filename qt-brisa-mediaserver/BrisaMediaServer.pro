@@ -1,17 +1,14 @@
-# -------------------------------------------------
-# Project created by QtCreator 2010-10-03T00:00:33
-# -------------------------------------------------
 TARGET = brisamediaserver
 TEMPLATE = app
-CONFIG += QT \
-    BRISA
+
+CONFIG += QT BRISA
 CONFIG += qt
-QT += core \
-    network \
-    xml
-BRISA += upnp \
-    core \
-    utils
+
+QT += core network xml
+BRISA += upnp core utils
+
+include($$PWD/../qt-brisa/src/brisalibs.pri)
+
 SOURCES += main.cpp \
     brisamediaserver.cpp \
     connectionmanager.cpp \
