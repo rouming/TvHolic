@@ -1,7 +1,7 @@
 #ifndef CONNECTIONMANAGER_H
 #define CONNECTIONMANAGER_H
 
-#include <BrisaService>
+#include "brisaservice.h"
 
 using Brisa::BrisaService;
 using Brisa::BrisaAction;

@@ -1,7 +1,7 @@
 #ifndef BRISAMEDIASERVER_H
 #define BRISAMEDIASERVER_H
 
-#include <BrisaDevice>
+#include "brisadevice.h"
 
 #include "connectionmanager.h"
 #include "contentdirectory.h"

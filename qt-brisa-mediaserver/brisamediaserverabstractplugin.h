@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include <BrisaAction>
+#include "brisaaction.h"
 
 using Brisa::BrisaAction;
 /*!

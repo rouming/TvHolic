@@ -7,7 +7,7 @@ CONFIG += qt
 QT += core network xml
 BRISA += upnp core utils
 
-include($$PWD/../qt-brisa/src/brisalibs.pri)
+include($$PWD/../qt-brisa/brisa.pri)
 
 SOURCES += main.cpp \
     brisamediaserver.cpp \

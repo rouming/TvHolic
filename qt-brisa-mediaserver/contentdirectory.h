@@ -3,7 +3,7 @@
 
 #include <QDirModel>
 
-#include <BrisaService>
+#include "brisaservice.h"
 
 #include "pluginmanager.h"
 #include "DIDL/audioitem.h"
