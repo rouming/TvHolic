@@ -1,11 +1,9 @@
 TARGET = brisamediaserver
 TEMPLATE = app
 
-CONFIG += QT BRISA
-CONFIG += qt
+CONFIG += debug_and_release
 
 QT += core network xml
-BRISA += upnp core utils
 
 include($$PWD/../qt-brisa/brisa.pri)
 

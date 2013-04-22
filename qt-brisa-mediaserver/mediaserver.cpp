@@ -56,7 +56,7 @@ void MediaServer::addVideoFiles()
     QStringList files = QFileDialog::getOpenFileNames(this,
                                                       "Select the musics you want to add...",
                                                       "/home",
-                                                      "Video (*.mpeg *.avi));;All files (*.*)");
+                                                      "Video (*.mpeg *.avi);;All files (*.*)");
     foreach (QString file, files) {
         this->ms->addVideoFile(file);
     }
