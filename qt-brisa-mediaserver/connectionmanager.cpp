@@ -18,8 +18,11 @@ ConnectionManager::ConnectionManager() :
 BrisaOutArgument* ConnectionManager::getprotocolinfo(
 	BrisaInArgument *const inArguments, BrisaAction *const action)
 {
-	Q_UNUSED(inArguments)
-	Q_UNUSED(action)
+	Q_UNUSED(inArguments);
+	Q_UNUSED(action);
+
+	qDebug("$$$$ getprotocolinfo");
+
 	//TODO: everything!
 	BrisaOutArgument *outArgs = new BrisaOutArgument();
 	outArgs->insert("Source",
@@ -34,8 +37,11 @@ BrisaOutArgument* ConnectionManager::getprotocolinfo(
 BrisaOutArgument* ConnectionManager::getcurrentconnectionids(
 	BrisaInArgument *const inArguments, BrisaAction *const action)
 {
-	Q_UNUSED(inArguments)
-	Q_UNUSED(action)
+	Q_UNUSED(inArguments);
+	Q_UNUSED(action);
+
+	qDebug("$$$$ getcurrentconnectionids");
+
 	//TODO: everything!
 	BrisaOutArgument *outArgs = new BrisaOutArgument();
 	outArgs->insert("ConnectionIDs", "");
@@ -45,8 +51,11 @@ BrisaOutArgument* ConnectionManager::getcurrentconnectionids(
 BrisaOutArgument* ConnectionManager::getcurrentconnectioninfo(
 	BrisaInArgument *const inArguments, BrisaAction *const action)
 {
-	Q_UNUSED(inArguments)
-	Q_UNUSED(action)
+	Q_UNUSED(inArguments);
+	Q_UNUSED(action);
+
+	qDebug("$$$$ getcurrentconnectioninfo");
+
 	//There's an input argument called ConnectionID
 	//TODO: everything!
 	BrisaOutArgument *outArgs = new BrisaOutArgument();

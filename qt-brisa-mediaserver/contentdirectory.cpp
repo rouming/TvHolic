@@ -37,6 +37,9 @@ BrisaOutArgument* ContentDirectory::getsearchcapabilities(BrisaInArgument *const
 {
 	(void)inArguments;
 	(void)action;
+
+	qDebug("@@@@ getsearchcapabilities");
+
 	BrisaOutArgument *outArgs = new BrisaOutArgument();
 	outArgs->insert("SearchCaps", "");
 	return outArgs;
@@ -46,6 +49,9 @@ BrisaOutArgument* ContentDirectory::getsortcapabilities(BrisaInArgument *const i
 {
 	(void)inArguments;
 	(void)action;
+
+	qDebug("@@@@ getsortcapabilities");
+
 	BrisaOutArgument *outArgs = new BrisaOutArgument();
 	outArgs->insert("SortCaps", "");
 	return outArgs;
@@ -55,6 +61,9 @@ BrisaOutArgument* ContentDirectory::getsystemupdateid(BrisaInArgument *const inA
 {
 	(void)inArguments;
 	(void)action;
+
+	qDebug("@@@@ getsystemupdateid");
+
 	BrisaOutArgument *outArgs = new BrisaOutArgument();
 	outArgs->insert("Id",
 					this->getVariable("SystemUpdateID")->
@@ -66,6 +75,9 @@ BrisaOutArgument* ContentDirectory::browse(BrisaInArgument *const inArguments, B
 {
 	(void)inArguments;
 	(void)action;
+
+	qDebug("@@@@ browse");
+
 	BrisaOutArgument *outArgs = new BrisaOutArgument();
 	return outArgs;
 }
@@ -74,6 +86,9 @@ BrisaOutArgument* ContentDirectory::search(BrisaInArgument *const inArguments, B
 {
 	(void)inArguments;
 	(void)action;
+
+	qDebug("@@@@ search");
+
 	BrisaOutArgument *outArgs = new BrisaOutArgument();
 	QString id = inArguments->value(CONTAINER_ID);
 	qDebug() << "Searching " << id;
@@ -98,6 +113,8 @@ BrisaOutArgument* ContentDirectory::browseFile(BrisaInArgument *const arguments,
 	(void)arguments;
 	(void)parent;
 
+	qDebug("@@@@ browseFile");
+
 	return new BrisaOutArgument();
 }
 
@@ -105,6 +122,8 @@ BrisaOutArgument* ContentDirectory::searchFile(BrisaInArgument *const arguments,
 {
 	(void)arguments;
 	(void)parent;
+
+	qDebug("@@@@ searchFile");
 
 	return new BrisaOutArgument();
 }
