@@ -20,5 +20,5 @@ Genre::Genre(QString id, QString parentId, QString title, bool restricted,
 
 QDomElement Genre::toDidlElement()
 {
-
+	return QDomElement();
 }

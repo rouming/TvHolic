@@ -7,6 +7,8 @@ QT += core network xml
 
 include($$PWD/../qt-brisa/brisa.pri)
 
+unix:QMAKE_CXXFLAGS += -Werror
+
 SOURCES += main.cpp \
     brisamediaserver.cpp \
     connectionmanager.cpp \

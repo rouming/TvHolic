@@ -35,6 +35,8 @@ ContentDirectory::~ContentDirectory()
 
 BrisaOutArgument* ContentDirectory::getsearchcapabilities(BrisaInArgument *const inArguments, BrisaAction *const action)
 {
+    (void)inArguments;
+    (void)action;
     BrisaOutArgument *outArgs = new BrisaOutArgument();
     outArgs->insert("SearchCaps", "");
     return outArgs;
@@ -42,6 +44,8 @@ BrisaOutArgument* ContentDirectory::getsearchcapabilities(BrisaInArgument *const
 
 BrisaOutArgument* ContentDirectory::getsortcapabilities(BrisaInArgument *const inArguments, BrisaAction *const action)
 {
+    (void)inArguments;
+    (void)action;
     BrisaOutArgument *outArgs = new BrisaOutArgument();
     outArgs->insert("SortCaps", "");
     return outArgs;
@@ -49,6 +53,8 @@ BrisaOutArgument* ContentDirectory::getsortcapabilities(BrisaInArgument *const i
 
 BrisaOutArgument* ContentDirectory::getsystemupdateid(BrisaInArgument *const inArguments, BrisaAction *const action)
 {
+    (void)inArguments;
+    (void)action;
     BrisaOutArgument *outArgs = new BrisaOutArgument();
     outArgs->insert("Id",
                     this->getVariable("SystemUpdateID")->
@@ -58,14 +64,16 @@ BrisaOutArgument* ContentDirectory::getsystemupdateid(BrisaInArgument *const inA
 
 BrisaOutArgument* ContentDirectory::browse(BrisaInArgument *const inArguments, BrisaAction *const action)
 {
-    Q_UNUSED(action);
+    (void)inArguments;
+    (void)action;
     BrisaOutArgument *outArgs = new BrisaOutArgument();
     return outArgs;
 }
 
 BrisaOutArgument* ContentDirectory::search(BrisaInArgument *const inArguments, BrisaAction *const action)
 {
-    Q_UNUSED(action);
+    (void)inArguments;
+    (void)action;
     BrisaOutArgument *outArgs = new BrisaOutArgument();
     QString id = inArguments->value(CONTAINER_ID);
     qDebug() << "Searching " << id;
@@ -87,11 +95,17 @@ BrisaOutArgument* ContentDirectory::search(BrisaInArgument *const inArguments, B
 
 BrisaOutArgument* ContentDirectory::browseFile(BrisaInArgument *const arguments, Container *parent)
 {
+    (void)arguments;
+    (void)parent;
+
     return new BrisaOutArgument();
 }
 
 BrisaOutArgument* ContentDirectory::searchFile(BrisaInArgument *const arguments, Container *parent)
 {
+    (void)arguments;
+    (void)parent;
+
     return new BrisaOutArgument();
 }
 

@@ -6,6 +6,7 @@ DidlObject::DidlObject(QString id, QString parentId,
                        QString title, bool restricted, QString creator,
                        QString writeStatus)
 {
+    (void)creator;
     this->elementName = "object";
     this->upnpClass = "object";
     this->id = id;
