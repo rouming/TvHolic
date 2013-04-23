@@ -116,5 +116,8 @@ void HttpSessionManager::newConnection(int socketDescriptor)
 void HttpSessionManager::releaseSession(HttpSession *session)
 {
 	Q_ASSERT(QThread::currentThread() == this);
-	pool.append(session);
+	if (pool.size() >= 16)
+		session->deleteLater();
+	else
+		pool.append(session);
 }

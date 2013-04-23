@@ -239,8 +239,5 @@ void HttpSession::onConnectionDie()
 	buffer.clear();
 	state = WAITING_FOR_REQUEST_LINE;
 
-	if (keepAlive())
-		sessionManager->releaseSession(this);
-	else
-		deleteLater();
+	sessionManager->releaseSession(this);
 }
