@@ -141,6 +141,12 @@ inline int statusCodeToReasonPhrasesIndex(int st)
 		return -1;
 }
 
+HttpResponse::HttpResponse() :
+	HttpMessage(HttpVersion(1, 1)),
+	m_statusCode(0),
+	m_closeConnection(false)
+{}
+
 HttpResponse::HttpResponse(const HttpVersion &httpVersion, int statusCode,
 						   bool closeConnection) :
 	HttpMessage(httpVersion),

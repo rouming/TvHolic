@@ -188,6 +188,9 @@ void BrisaService::call(const QString &method, BrisaInArgument param, BrisaWebse
 
 void BrisaService::buildWebServiceTree(BrisaWebserver *sessionManager)
 {
+	qRegisterMetaType<BrisaInArgument>("BrisaInArgument");
+	qRegisterMetaType<BrisaOutArgument>("BrisaOutArgument");
+
 	BrisaWebService *control = new BrisaControlWebService(serviceType);
 
 	connect(control, SIGNAL(requestReceived(QString,BrisaInArgument,BrisaWebserverSession*)),

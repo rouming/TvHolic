@@ -28,6 +28,7 @@
 #include "brisawebservice.h"
 
 #include <QTimer>
+#include <QMetaType>
 
 #ifndef MAPPED_MEMORY_SIZE
 #define MAPPED_MEMORY_SIZE 64
@@ -51,6 +52,8 @@ BrisaWebserverSession::BrisaWebserverSession(BrisaWebserver *server, HttpSession
 	server(server),
 	timer(new QTimer)
 {
+	qRegisterMetaType<HttpResponse>("HttpResponse");
+
 	lastSupportedHttpVersion = HttpVersion(1, 1);
 	connect(this, SIGNAL(responsePosted(HttpResponse)), this, SLOT(writeResponse(HttpResponse)));
 	connect(timer, SIGNAL(timeout()), this, SLOT(onTimeout()));

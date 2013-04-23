@@ -96,6 +96,8 @@ public:
 	};
 
 public:
+	explicit HttpResponse();
+
 	// If reasonPhrase is null and the status code is know, then the default
 	// reason phrase to the is set
 	explicit HttpResponse(const HttpVersion &httpVersion, int statusCode = OK,
