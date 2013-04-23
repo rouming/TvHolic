@@ -163,18 +163,13 @@ BrisaDevice::~BrisaDevice()
 	if (isRunning())
 		stop();
 
-	foreach (BrisaIcon *icon, iconList) {
-		icon->deleteLater();
-	}
-	iconList.clear();
-
+	qDeleteAll(this->iconList);
 	qDeleteAll(this->serviceList);
 	serviceList.clear();
 	qDeleteAll(this->embeddedDeviceList);
 	embeddedDeviceList.clear();
 
-	ssdp->deleteLater();
-
+	delete ssdp;
 	delete webserver;
 }
 

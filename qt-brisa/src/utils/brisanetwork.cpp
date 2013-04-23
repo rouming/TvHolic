@@ -107,36 +107,35 @@ QString getIp(QString networkInterface)
 
 QBool isPortOpen(QString address, qint16 port, qint16 timeout)
 {
+	bool ret;
 	QTcpSocket *socket = new QTcpSocket();
 	socket->connectToHost(address, port);
 	socket->waitForConnected(timeout);
 	switch (socket->state()) {
 	case QAbstractSocket::UnconnectedState:
-		return QBool(false);
-		delete socket;
+		ret = false;
 		break;
 
 	case QAbstractSocket::ConnectingState:
 		//stay waiting for some miliseconds to re-verify the state
 		socket->waitForConnected(timeout);
-		if (socket->state() == QAbstractSocket::ConnectedState) {
-			return QBool(true);
-		} else {
-			return QBool(false);
-		}
-		delete socket;
+		if (socket->state() == QAbstractSocket::ConnectedState)
+			ret = true;
+		else
+			ret = false;
 		break;
 
 	case QAbstractSocket::ConnectedState:
-		return QBool(true);
-		delete socket;
+		ret = true;
 		break;
+
 	default:
-		delete socket;
+		ret = false;
 		break;
 	}
+
 	delete socket;
-	return QBool(false);
+	return QBool(ret);
 }
 
 quint16 getPort()
