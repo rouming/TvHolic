@@ -41,6 +41,22 @@ enum State {
 	WAITING_FOR_ENTITY_BODY
 };
 
+//#define DUMP_NETWORK
+
+enum DumpDir {
+	DUMP_OUT = 0,
+	DUMP_IN  = 1
+};
+
+void dump(const QByteArray& ba, DumpDir dir)
+{
+	if (dir == DUMP_OUT)
+		qDebug("<<<<<<<<<<<<<< OUT <<<<<<<<<<<<<<<<<");
+	else
+		qDebug(">>>>>>>>>>>>>>  IN  >>>>>>>>>>>>>>>>");
+	qDebug("%s", ba.constData());
+}
+
 HttpSession::HttpSession(HttpSessionManager *sessionManager) :
 	QObject(sessionManager),
 	lastSupportedHttpVersion(1, 1),
@@ -74,27 +90,34 @@ int HttpSession::isRequestSupported(const HttpRequest &request) const
 
 void HttpSession::writeResponse(HttpResponse r)
 {
+	QByteArray ba;
 	prepareResponse(r);
 
-	socket->write(r.httpVersion());
-	socket->write(" ");
-	socket->write(QByteArray::number(r.statusCode()));
-	socket->write(" ");
-	socket->write(r.reasonPhrase());
-	socket->write("\r\n");
+	ba.append(r.httpVersion().operator QByteArray());
+	ba.append(" ");
+	ba.append(QByteArray::number(r.statusCode()));
+	ba.append(" ");
+	ba.append(r.reasonPhrase());
+	ba.append("\r\n");
 
 	for (QHash<QByteArray, QByteArray>::const_iterator i = r.headersBeginIterator(); i != r.headersEndIterator(); ++i) {
-		socket->write(i.key());
+		ba.append(i.key());
 		if (!i.value().isNull()) {
-			socket->write(": ");
-			socket->write(i.value());
+			ba.append(": ");
+			ba.append(i.value());
 		} else {
-			socket->write(":");
+			ba.append(":");
 		}
-		socket->write("\r\n");
+		ba.append("\r\n");
 	}
 
-	socket->write("\r\n");
+	ba.append("\r\n");
+
+#ifdef DUMP_NETWORK
+	dump(ba, DUMP_OUT);
+#endif
+
+	socket->write(ba);
 
 	if (r.entityBody())
 		writeEntityBody(r, socket);
@@ -119,7 +142,11 @@ void HttpSession::writeEntityBody(const HttpResponse &r, QTcpSocket *s)
 
 void HttpSession::onReadyRead()
 {
-	buffer.append(socket->readAll());
+	QByteArray ba = socket->readAll();
+#ifdef DUMP_NETWORK
+	dump(ba, DUMP_IN);
+#endif
+	buffer.append(ba);
 
 
 	try {
