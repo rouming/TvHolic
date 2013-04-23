@@ -81,5 +81,10 @@ void HttpServer::start()
 	listen(address, port);
 	foreach(HttpSessionManager *thread, threads) {
 		thread->start();
+		if (!thread->isRunning()) {
+			qWarning("Error: can't start thread");
+			continue;
+		}
+		thread->waitForEventLoopStart();
 	}
 }

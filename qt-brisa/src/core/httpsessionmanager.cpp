@@ -23,44 +23,91 @@
  *
  */
 
+#include <QEventLoop>
+#include <QTcpSocket>
 #include "httpsessionmanager.h"
 #include "httpsession.h"
 
 using namespace Brisa;
 
 HttpSessionManager::HttpSessionManager(HttpServer *parent) :
-	QThread(parent),
-	server(parent)
+	QThread(),
+	server(parent),
+	connector(NULL)
 {
+	moveToThread(this);
+}
+
+void HttpSessionManager::waitForEventLoopStart()
+{
+	QMutexLocker locker(&mutex);
+	if (!isRunning()) {
+		Q_ASSERT(0);
+		return;
+	}
+	if (connector == NULL)
+		waitCond.wait(&mutex);
 }
 
 void HttpSessionManager::run()
 {
-	connect(this, SIGNAL(newConnection(int)), this, SLOT(onNewConnection(int)));
+	QMutexLocker locker(&mutex);
 
-	exec();
+	connector = new Connector(this);
+	connect(connector, SIGNAL(sig_newConnection(int)),
+			connector, SLOT(onNewConnection(int)));
+	waitCond.wakeOne();
+
+	locker.unlock();
+
+	QEventLoop eventLoop;
+	eventLoop.exec();
+
+	// ...
+	// Here new connection can be accepted
+	// this case will be handled specially
+	// by processing pended events
+	// ...
+
+	locker.relock();
+	delete connector;
+	connector = NULL;
+	locker.unlock();
+
+	// We may have something pended
+	while (eventLoop.processEvents())
+		;
 }
 
 void HttpSessionManager::addSession(int socketDescriptor)
 {
-	emit newConnection(socketDescriptor);
+	QMutexLocker locker(&mutex);
+	if (!isRunning() || connector == NULL) {
+		qWarning("Error: can't accept incoming connection");
+		QTcpSocket sock;
+		sock.setSocketDescriptor(socketDescriptor);
+		sock.close();
+
+		return;
+	}
+	connector->newConnection(socketDescriptor);
 }
 
-void HttpSessionManager::onNewConnection(int socketDescriptor)
+void HttpSessionManager::newConnection(int socketDescriptor)
 {
-	bool created = false;
-
-	mutex.lock();
+	// Very rare race, thread is going to be stopped
+	if (connector == NULL) {
+		qWarning("Warning: thread is going to be deleted, close accepted connection");
+		QTcpSocket sock;
+		sock.setSocketDescriptor(socketDescriptor);
+		sock.close();
+		return;
+	}
 
 	if (pool.size()) {
 		pool.back()->setSession(socketDescriptor);
 		pool.pop_back();
-		created = true;
-	}
-
-	mutex.unlock();
-
-	if (!created) {
+	} else {
 		HttpSession *s = server->factory().generateSessionHandler(this);
 		s->setSession(socketDescriptor);
 	}
@@ -68,9 +115,6 @@ void HttpSessionManager::onNewConnection(int socketDescriptor)
 
 void HttpSessionManager::releaseSession(HttpSession *session)
 {
-	mutex.lock();
-
+	Q_ASSERT(QThread::currentThread() == this);
 	pool.append(session);
-
-	mutex.unlock();
 }

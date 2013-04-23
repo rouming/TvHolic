@@ -172,7 +172,7 @@ inline void BrisaEventController::unsubscribe(const HttpRequest &request,
 
 void BrisaEventController::sendEvent(const BrisaEventMessage &message, const QUrl &url)
 {
-	QTcpSocket *socket = new QTcpSocket(this);
+	QTcpSocket *socket = new QTcpSocket;
 
 	socket->connectToHost(url.host(), url.port());
 

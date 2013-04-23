@@ -28,6 +28,7 @@
 
 #include <QThread>
 #include <QMutex>
+#include <QWaitCondition>
 #include "httpserver.h"
 
 namespace Brisa
@@ -39,21 +40,49 @@ class BRISA_CORE_EXPORT HttpSessionManager : public QThread
 public:
 	explicit HttpSessionManager(HttpServer *parent);
 
-	void run();
-
 	void addSession(int socketDescriptor);
+
+	// NOTE: works only from _this_ thread
 	void releaseSession(HttpSession *);
 
-signals:
-	void newConnection(int);
-
-private slots:
-	void onNewConnection(int socketDescriptor);
+	void waitForEventLoopStart();
 
 private:
+	void run();
+	void newConnection(int socketDescriptor);
+
+private:
+	friend class Connector;
+
 	HttpServer *server;
 	QList<HttpSession *> pool;
 	QMutex mutex;
+	QWaitCondition waitCond;
+	class Connector *connector;
+};
+
+class Connector : public QObject
+{
+	Q_OBJECT
+public:
+	Connector(HttpSessionManager *thread_) :
+		thread(thread_)	{
+	}
+
+	void newConnection(int socketDescriptor) {
+		emit sig_newConnection(socketDescriptor);
+	}
+
+public slots:
+	void onNewConnection(int socketDescriptor) {
+		thread->newConnection(socketDescriptor);
+	}
+
+signals:
+	void sig_newConnection(int);
+
+private:
+	HttpSessionManager *thread;
 };
 
 } // namespace Brisa
