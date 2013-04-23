@@ -54,18 +54,18 @@ void HttpServer::setThreadsNumber(int number)
 	} else if (number < oldNumber) {
 		int i = oldNumber - number;
 		while (i--) {
-			delete threads.takeLast();
+			HttpSessionManager* thread = threads.takeLast();
+			thread->quit();
+			thread->wait();
+			delete thread;
 		}
 	}
 }
 
 HttpServer::~HttpServer()
 {
-	// TODO: review code
 	foreach(HttpSessionManager *thread, threads) {
-		thread->terminate();
-	}
-	foreach(HttpSessionManager *thread, threads) {
+		thread->quit();
 		thread->wait();
 		delete thread;
 	}
