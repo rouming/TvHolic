@@ -32,33 +32,33 @@
 
 #include "httprequest.h"
 
-namespace Brisa {
+namespace Brisa
+{
 
 class BrisaWebserverSession;
 
 class BRISA_CORE_EXPORT BrisaWebService: public QObject
 {
-Q_OBJECT
+	Q_OBJECT
 public:
-    BrisaWebService(QObject *parent = 0);
-    virtual ~BrisaWebService();
+	BrisaWebService(QObject *parent = 0);
+	virtual ~BrisaWebService();
 
-    void postRequest(const HttpRequest &request, BrisaWebserverSession *session);
+	void postRequest(const HttpRequest &request, BrisaWebserverSession *session);
 
 signals:
-    void genericRequestReceived(HttpRequest, BrisaWebserverSession *session);
+	void genericRequestReceived(HttpRequest, BrisaWebserverSession *session);
 
 protected:
-    virtual void onRequest(const HttpRequest &request, BrisaWebserverSession *session);
-    QByteArray path()
-    {
-        return m_path;
-    }
+	virtual void onRequest(const HttpRequest &request, BrisaWebserverSession *session);
+	QByteArray path() {
+		return m_path;
+	}
 
 private:
-    QByteArray m_path;
+	QByteArray m_path;
 
-    friend class BrisaWebserver;
+	friend class BrisaWebserver;
 };
 
 }

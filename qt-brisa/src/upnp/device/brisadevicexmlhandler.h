@@ -36,18 +36,20 @@
 
 #include "brisaglobal.h"
 
-namespace Brisa {
+namespace Brisa
+{
 
 class BrisaDevice;
 
-class BRISA_UPNP_EXPORT BrisaDeviceXMLHandler {
+class BRISA_UPNP_EXPORT BrisaDeviceXMLHandler
+{
 public:
-    void xmlGenerator(BrisaDevice *device, QFile *file);
+	void xmlGenerator(BrisaDevice *device, QFile *file);
 
 private:
-    void writeDevice(BrisaDevice *device);
+	void writeDevice(BrisaDevice *device);
 
-    QXmlStreamWriter *writer;
+	QXmlStreamWriter *writer;
 };
 
 }

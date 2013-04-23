@@ -31,51 +31,52 @@
 using namespace Brisa;
 
 BrisaMulticastEventMessage::BrisaMulticastEventMessage(
-        BrisaStateVariable *variable, QString LVL, QObject *parent) :
-        BrisaAbstractEventMessage(parent),
-        variable(variable),
-        SEQ(variable->getNextMulticastSeq()),
-        LVL(LVL)
+	BrisaStateVariable *variable, QString LVL, QObject *parent) :
+	BrisaAbstractEventMessage(parent),
+	variable(variable),
+	SEQ(variable->getNextMulticastSeq()),
+	LVL(LVL)
 {
 }
 
 //TODO Use a real value for BOOTID.UPNP.ORG
 QHttpRequestHeader BrisaMulticastEventMessage::getMessageHeader() const
 {
-    QHttpRequestHeader header("NOTIFY", "*");
+	QHttpRequestHeader header("NOTIFY", "*");
 
-    header.setValue("HOST","239.255.255.246:7900");
-    header.setValue("CONTENT-TYPE", "text/xml");
-    header.addValue("CONTENT-TYPE", "charset=\"utf-8\"");
-    header.setValue("USN", this->variable->getMulticastUdn() + "::" +
-                    this->variable->getMulticastUsn());
-    header.setValue("SVCID", variable->getMulticastSvcid());
-    header.setValue("NT", "upnp:event");
-    header.setValue("NTS", "upnp:propchange");
-    header.setValue("SEQ", QString::number(SEQ));
-    header.setValue("LVL", LVL);
-    header.setValue("BOOTID.UPNP.ORG", "");
-    header.setValue("CONTENT-LENGTH", QString::number(
-            this->getMessageBody().size()));
+	header.setValue("HOST","239.255.255.246:7900");
+	header.setValue("CONTENT-TYPE", "text/xml");
+	header.addValue("CONTENT-TYPE", "charset=\"utf-8\"");
+	header.setValue("USN", this->variable->getMulticastUdn() + "::" +
+					this->variable->getMulticastUsn());
+	header.setValue("SVCID", variable->getMulticastSvcid());
+	header.setValue("NT", "upnp:event");
+	header.setValue("NTS", "upnp:propchange");
+	header.setValue("SEQ", QString::number(SEQ));
+	header.setValue("LVL", LVL);
+	header.setValue("BOOTID.UPNP.ORG", "");
+	header.setValue("CONTENT-LENGTH", QString::number(
+						this->getMessageBody().size()));
 
-    return header;
+	return header;
 }
 
-QByteArray BrisaMulticastEventMessage::getMessageBody() const {
-    QByteArray body;
+QByteArray BrisaMulticastEventMessage::getMessageBody() const
+{
+	QByteArray body;
 
-    body.append("<?xml version=\"1.0\"?>\r\n");
-    body.append(
-            "<e:propertyset xmlns:e=\"urn:schemas-upnp-org:event-1-0\">\r\n");
+	body.append("<?xml version=\"1.0\"?>\r\n");
+	body.append(
+		"<e:propertyset xmlns:e=\"urn:schemas-upnp-org:event-1-0\">\r\n");
 
-    QString variableName = this->variable->getAttribute(BrisaStateVariable::Name);
-    QString variableValue = this->variable->getAttribute(BrisaStateVariable::Value);
+	QString variableName = this->variable->getAttribute(BrisaStateVariable::Name);
+	QString variableValue = this->variable->getAttribute(BrisaStateVariable::Value);
 
-    body.append("  <e:property>\r\n");
-    body.append("    <" + variableName + ">" + variableValue + "</"
-            + variableName + ">\r\n");
-    body.append("  </e:property>\r\n");
-    body.append("</e:propertyset>\r\n");
+	body.append("  <e:property>\r\n");
+	body.append("    <" + variableName + ">" + variableValue + "</"
+				+ variableName + ">\r\n");
+	body.append("  </e:property>\r\n");
+	body.append("</e:propertyset>\r\n");
 
-    return body;
+	return body;
 }

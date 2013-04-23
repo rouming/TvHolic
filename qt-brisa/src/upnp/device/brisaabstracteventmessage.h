@@ -36,7 +36,8 @@
 #include "brisastatevariable.h"
 #include "brisaglobal.h"
 
-namespace Brisa {
+namespace Brisa
+{
 
 /*!
  * \internal
@@ -44,14 +45,15 @@ namespace Brisa {
  *
  * \brief Represents an UPnP event message.
  */
-class BRISA_UPNP_EXPORT BrisaAbstractEventMessage: public QObject {
-Q_OBJECT
+class BRISA_UPNP_EXPORT BrisaAbstractEventMessage: public QObject
+{
+	Q_OBJECT
 
 public:
 
-    BrisaAbstractEventMessage(QObject *parent = 0);
+	BrisaAbstractEventMessage(QObject *parent = 0);
 
-    QByteArray getRequestMessage() const;
+	QByteArray getRequestMessage() const;
 };
 
 }

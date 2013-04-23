@@ -38,10 +38,10 @@
 using namespace Brisa;
 
 BrisaWebserver::BrisaWebserver(const QHostAddress &host, quint16 port) :
-        HttpServer(host, port),
-        m_factory(this)
+	HttpServer(host, port),
+	m_factory(this)
 {
-    addService("/", new BrisaWebStaticContent(DEFAULT_PAGE, this));
+	addService("/", new BrisaWebStaticContent(DEFAULT_PAGE, this));
 }
 
 BrisaWebserver::~BrisaWebserver()
@@ -53,57 +53,57 @@ BrisaWebserver::~BrisaWebserver()
 
 void BrisaWebserver::addService(QByteArray path, BrisaWebService *service)
 {
-    if (!service || path.isEmpty())
-        return;
+	if (!service || path.isEmpty())
+		return;
 
-    mutex.lock();
+	mutex.lock();
 
-    if (!path.startsWith('/'))
-        path.prepend('/');
+	if (!path.startsWith('/'))
+		path.prepend('/');
 
-    services[path] = service;
-    service->m_path = path;
+	services[path] = service;
+	service->m_path = path;
 
-    qDebug() << "Adding Service: " << path;
+	qDebug() << "Adding Service: " << path;
 
-    mutex.unlock();
+	mutex.unlock();
 }
 
 void BrisaWebserver::removeService(QByteArray path)
 {
-    if (!path.startsWith('/'))
-        path.prepend('/');
+	if (!path.startsWith('/'))
+		path.prepend('/');
 
-    mutex.lock();
+	mutex.lock();
 
-    if (services.contains(path)) {
-        services[path]->m_path.clear();
-        services.remove(path);
-    }
+	if (services.contains(path)) {
+		services[path]->m_path.clear();
+		services.remove(path);
+	}
 
-    mutex.unlock();
+	mutex.unlock();
 }
 
 BrisaWebService *BrisaWebserver::service(QByteArray path) const
 {
-    if (path.isEmpty())
-        return NULL;
+	if (path.isEmpty())
+		return NULL;
 
-    if (!path.startsWith('/'))
-        path.prepend('/');
+	if (!path.startsWith('/'))
+		path.prepend('/');
 
-    mutex.lock();
-    BrisaWebService *service = services.value(path);
-    mutex.unlock();
-    return service;
+	mutex.lock();
+	BrisaWebService *service = services.value(path);
+	mutex.unlock();
+	return service;
 }
 
 HttpServerFactory &BrisaWebserver::factory()
 {
-    return m_factory;
+	return m_factory;
 }
 
 HttpSession *BrisaWebserver::Factory::generateSessionHandler(HttpSessionManager *parent)
 {
-    return new BrisaWebserverSession(server, parent);
+	return new BrisaWebserverSession(server, parent);
 }

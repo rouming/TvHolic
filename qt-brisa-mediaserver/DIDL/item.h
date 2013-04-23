@@ -6,14 +6,14 @@
 class Item : public DidlObject
 {
 public:
-    Item(QString id = "", QString parentId = "", QString title = "",
-         bool restricted = false, QString creator = "",
-         QString writeStatus = WRITE_STATUS_NOT_WRITABLE, QString refId = "");
+	Item(QString id = "", QString parentId = "", QString title = "",
+		 bool restricted = false, QString creator = "",
+		 QString writeStatus = WRITE_STATUS_NOT_WRITABLE, QString refId = "");
 
-    QDomElement toDidlElement();
+	QDomElement toDidlElement();
 
 protected:
-    QString refId;
+	QString refId;
 };
 
 #endif // ITEM_H

@@ -6,8 +6,8 @@
 class CreateClass : public SearchClass
 {
 public:
-    CreateClass(QString className, bool includeDerived = false, QString classFriendlyName = "");
-    QDomElement getElement();
+	CreateClass(QString className, bool includeDerived = false, QString classFriendlyName = "");
+	QDomElement getElement();
 };
 
 #endif // CREATECLASS_H

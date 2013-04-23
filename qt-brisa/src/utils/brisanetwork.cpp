@@ -38,111 +38,119 @@
 
 using namespace Brisa;
 
-QBool isLoopbackIPv4Address(QString address) {
-    return QBool(!address.compare("127.0.0.1"));
+QBool isLoopbackIPv4Address(QString address)
+{
+	return QBool(!address.compare("127.0.0.1"));
 }
 
-QBool isLoopbackIPv6Address(QString address) {
-    return QBool(!address.compare("0:0:0:0:0:0:0:1"));
+QBool isLoopbackIPv6Address(QString address)
+{
+	return QBool(!address.compare("0:0:0:0:0:0:0:1"));
 }
 
-QBool isPromiscuousIPv4Address(QString address) {
-    return QBool(!address.compare("0.0.0.0"));
+QBool isPromiscuousIPv4Address(QString address)
+{
+	return QBool(!address.compare("0.0.0.0"));
 }
 
-QBool isPromiscuousIPv6Address(QString address) {
-    return QBool(!address.compare("0:0:0:0:0:0:0:0") | !address.compare("::"));
+QBool isPromiscuousIPv6Address(QString address)
+{
+	return QBool(!address.compare("0:0:0:0:0:0:0:0") | !address.compare("::"));
 }
 
-QString getValidIP() {
-/*#if defined(Q_OS_UNIX) || defined(Q_OS_ANDROID)
-    BrisaConfigurationManager *config = BrisaConfigurationManager::getInstance();
-    QString interfaceName = config->getParameter("network", "interface");
-    QString ip = getIp(interfaceName);
-    if (ip.isEmpty()) {
-        ip = config->getParameter("network", "ip");
-    }
-    if (ip.isEmpty()) {
-        ip = QHostAddress(QHostAddress::Any).toString();
-    }
-    return ip;
-#else*/
-    QList<QNetworkInterface> nifs = QNetworkInterface::allInterfaces();
-    foreach(QNetworkInterface nif, nifs) {
-        QNetworkInterface::InterfaceFlags flags = nif.flags();
-        if (!(flags & QNetworkInterface::IsUp &&
-              flags & QNetworkInterface::IsRunning &&
-              flags & QNetworkInterface::CanMulticast))
-            continue;
+QString getValidIP()
+{
+	/*#if defined(Q_OS_UNIX) || defined(Q_OS_ANDROID)
+	    BrisaConfigurationManager *config = BrisaConfigurationManager::getInstance();
+	    QString interfaceName = config->getParameter("network", "interface");
+	    QString ip = getIp(interfaceName);
+	    if (ip.isEmpty()) {
+	        ip = config->getParameter("network", "ip");
+	    }
+	    if (ip.isEmpty()) {
+	        ip = QHostAddress(QHostAddress::Any).toString();
+	    }
+	    return ip;
+	#else*/
+	QList<QNetworkInterface> nifs = QNetworkInterface::allInterfaces();
+	foreach(QNetworkInterface nif, nifs) {
+		QNetworkInterface::InterfaceFlags flags = nif.flags();
+		if (!(flags & QNetworkInterface::IsUp &&
+			  flags & QNetworkInterface::IsRunning &&
+			  flags & QNetworkInterface::CanMulticast))
+			continue;
 
-        QList<QNetworkAddressEntry> aes = nif.addressEntries();
-        foreach(QNetworkAddressEntry ae, aes) {
-            QHostAddress addr = ae.ip();
-            if (addr.protocol() != QAbstractSocket::IPv4Protocol)
-                continue;
-            return addr.toString();
-        }
-    }
-    qDebug()
-            << "Couldn't acquire a non loopback IP  address,returning 127.0.0.1.";
-    return "127.0.0.1";
+		QList<QNetworkAddressEntry> aes = nif.addressEntries();
+		foreach(QNetworkAddressEntry ae, aes) {
+			QHostAddress addr = ae.ip();
+			if (addr.protocol() != QAbstractSocket::IPv4Protocol)
+				continue;
+			return addr.toString();
+		}
+	}
+	qDebug()
+			<< "Couldn't acquire a non loopback IP  address,returning 127.0.0.1.";
+	return "127.0.0.1";
 //#endif
 }
 
 //TODO deprecated function
-QString getIp(QString networkInterface) {
-    QNetworkInterface interface = QNetworkInterface::interfaceFromName(networkInterface);
-    if (interface.isValid()) {
-        return interface.addressEntries().first().ip().toString();
-    }
-    return "";
+QString getIp(QString networkInterface)
+{
+	QNetworkInterface interface = QNetworkInterface::interfaceFromName(networkInterface);
+	if (interface.isValid()) {
+		return interface.addressEntries().first().ip().toString();
+	}
+	return "";
 }
 
 
-QBool isPortOpen(QString address, qint16 port, qint16 timeout) {
-    QTcpSocket *socket = new QTcpSocket();
-    socket->connectToHost(address, port);
-    socket->waitForConnected(timeout);
-    switch (socket->state()) {
-    case QAbstractSocket::UnconnectedState:
-        return QBool(false);
-        delete socket;
-        break;
+QBool isPortOpen(QString address, qint16 port, qint16 timeout)
+{
+	QTcpSocket *socket = new QTcpSocket();
+	socket->connectToHost(address, port);
+	socket->waitForConnected(timeout);
+	switch (socket->state()) {
+	case QAbstractSocket::UnconnectedState:
+		return QBool(false);
+		delete socket;
+		break;
 
-    case QAbstractSocket::ConnectingState:
-        //stay waiting for some miliseconds to re-verify the state
-        socket->waitForConnected(timeout);
-        if (socket->state() == QAbstractSocket::ConnectedState) {
-            return QBool(true);
-        } else {
-            return QBool(false);
-        }
-        delete socket;
-        break;
+	case QAbstractSocket::ConnectingState:
+		//stay waiting for some miliseconds to re-verify the state
+		socket->waitForConnected(timeout);
+		if (socket->state() == QAbstractSocket::ConnectedState) {
+			return QBool(true);
+		} else {
+			return QBool(false);
+		}
+		delete socket;
+		break;
 
-    case QAbstractSocket::ConnectedState:
-        return QBool(true);
-        delete socket;
-        break;
-    default:
-        delete socket;
-        break;
-    }
-    delete socket;
-    return QBool(false);
+	case QAbstractSocket::ConnectedState:
+		return QBool(true);
+		delete socket;
+		break;
+	default:
+		delete socket;
+		break;
+	}
+	delete socket;
+	return QBool(false);
 }
 
-quint16 getPort() {
-    srand( time(NULL));
-    //Generate a port number in range [49152,65535]
-    //TODO modify this expression to a more legible one
-    quint16 randomPort =
-            (49152 + rand()/ (RAND_MAX / (65535 - 49152 + 1) + 1));
-    qDebug() <<  "Port value chosen:" << randomPort;
-    while (isPortOpen(getValidIP(), randomPort, 5)) {
-        qDebug() << "Port is already opened, trying another ";
-        randomPort = (49152 + rand() / (RAND_MAX / (65535 - 49152 + 1) + 1));
-    }
-    return randomPort;
+quint16 getPort()
+{
+	srand( time(NULL));
+	//Generate a port number in range [49152,65535]
+	//TODO modify this expression to a more legible one
+	quint16 randomPort =
+		(49152 + rand()/ (RAND_MAX / (65535 - 49152 + 1) + 1));
+	qDebug() <<  "Port value chosen:" << randomPort;
+	while (isPortOpen(getValidIP(), randomPort, 5)) {
+		qDebug() << "Port is already opened, trying another ";
+		randomPort = (49152 + rand() / (RAND_MAX / (65535 - 49152 + 1) + 1));
+	}
+	return randomPort;
 }
 

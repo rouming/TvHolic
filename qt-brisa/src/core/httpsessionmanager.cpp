@@ -29,48 +29,48 @@
 using namespace Brisa;
 
 HttpSessionManager::HttpSessionManager(HttpServer *parent) :
-    QThread(parent),
-    server(parent)
+	QThread(parent),
+	server(parent)
 {
 }
 
 void HttpSessionManager::run()
 {
-    connect(this, SIGNAL(newConnection(int)), this, SLOT(onNewConnection(int)));
+	connect(this, SIGNAL(newConnection(int)), this, SLOT(onNewConnection(int)));
 
-    exec();
+	exec();
 }
 
 void HttpSessionManager::addSession(int socketDescriptor)
 {
-    emit newConnection(socketDescriptor);
+	emit newConnection(socketDescriptor);
 }
 
 void HttpSessionManager::onNewConnection(int socketDescriptor)
 {
-    bool created = false;
+	bool created = false;
 
-    mutex.lock();
+	mutex.lock();
 
-    if (pool.size()) {
-        pool.back()->setSession(socketDescriptor);
-        pool.pop_back();
-        created = true;
-    }
+	if (pool.size()) {
+		pool.back()->setSession(socketDescriptor);
+		pool.pop_back();
+		created = true;
+	}
 
-    mutex.unlock();
+	mutex.unlock();
 
-    if (!created) {
-        HttpSession *s = server->factory().generateSessionHandler(this);
-        s->setSession(socketDescriptor);
-    }
+	if (!created) {
+		HttpSession *s = server->factory().generateSessionHandler(this);
+		s->setSession(socketDescriptor);
+	}
 }
 
 void HttpSessionManager::releaseSession(HttpSession *session)
 {
-    mutex.lock();
+	mutex.lock();
 
-    pool.append(session);
+	pool.append(session);
 
-    mutex.unlock();
+	mutex.unlock();
 }

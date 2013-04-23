@@ -7,23 +7,22 @@
 
 class PluginManager : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit PluginManager(QObject *parent = 0);
-    ~PluginManager();
+	explicit PluginManager(QObject *parent = 0);
+	~PluginManager();
 
-    inline QVector<BrisaMediaServerAbstractPlugin*> getPlugins()
-    {
-        return this->plugins;
-    }
+	inline QVector<BrisaMediaServerAbstractPlugin*> getPlugins() {
+		return this->plugins;
+	}
 
 signals:
 
 public slots:
-    void setupPlugins();
+	void setupPlugins();
 
 private:
-    QVector<BrisaMediaServerAbstractPlugin*> plugins;
+	QVector<BrisaMediaServerAbstractPlugin*> plugins;
 };
 
 #endif // PLUGINMANAGER_H

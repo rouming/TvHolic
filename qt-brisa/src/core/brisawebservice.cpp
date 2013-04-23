@@ -30,7 +30,7 @@
 using namespace Brisa;
 
 BrisaWebService::BrisaWebService(QObject *parent) :
-    QObject(parent)
+	QObject(parent)
 {
 }
 
@@ -40,11 +40,11 @@ BrisaWebService::~BrisaWebService()
 
 void BrisaWebService::postRequest(const HttpRequest &request, BrisaWebserverSession *session)
 {
-    onRequest(request, session);
+	onRequest(request, session);
 }
 
 void BrisaWebService::onRequest(const HttpRequest &request, BrisaWebserverSession *session)
 {
-    emit genericRequestReceived(request, session);
+	emit genericRequestReceived(request, session);
 }
 

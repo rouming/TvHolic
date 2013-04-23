@@ -35,68 +35,71 @@
 using namespace Brisa;
 
 BrisaControlPointService::BrisaControlPointService(QObject *parent) :
-    BrisaAbstractService(parent) {
-    connect(http, SIGNAL(responseReady()), this, SLOT(getResponse()));
+	BrisaAbstractService(parent)
+{
+	connect(http, SIGNAL(responseReady()), this, SLOT(getResponse()));
 }
 
 BrisaControlPointService::BrisaControlPointService(const QString &serviceType,
-        const QString &serviceId, const QString &scpdUrl,
-        const QString &controlUrl, const QString &eventSubUrl,
-        const QString &host, QObject *parent) :
-    BrisaAbstractService(serviceType, serviceId, scpdUrl, controlUrl,
-            eventSubUrl, host, parent) {
-    connect(http, SIGNAL(responseReady()), this, SLOT(getResponse()));
+		const QString &serviceId, const QString &scpdUrl,
+		const QString &controlUrl, const QString &eventSubUrl,
+		const QString &host, QObject *parent) :
+	BrisaAbstractService(serviceType, serviceId, scpdUrl, controlUrl,
+						 eventSubUrl, host, parent)
+{
+	connect(http, SIGNAL(responseReady()), this, SLOT(getResponse()));
 }
 
 BrisaControlPointService::BrisaControlPointService(
-        BrisaControlPointService &serv) :
-    BrisaAbstractService(NULL),
-    lastMethod(serv.lastMethod)
+	BrisaControlPointService &serv) :
+	BrisaAbstractService(NULL),
+	lastMethod(serv.lastMethod)
 {
-    connect(http, SIGNAL(responseReady()), this, SLOT(getResponse()));
+	connect(http, SIGNAL(responseReady()), this, SLOT(getResponse()));
 }
 
-void BrisaControlPointService::parseFromXml(QTemporaryFile *xml) {
-    BrisaServiceXMLHandler handler;
-    handler.parseService(this, xml);
-    xml->deleteLater();
+void BrisaControlPointService::parseFromXml(QTemporaryFile *xml)
+{
+	BrisaServiceXMLHandler handler;
+	handler.parseService(this, xml);
+	xml->deleteLater();
 }
 
-void BrisaControlPointService::call(const QString &method, BrisaInArgument &param) {
-    QtSoapMessage request;
+void BrisaControlPointService::call(const QString &method, BrisaInArgument &param)
+{
+	QtSoapMessage request;
 
-    http->setAction("\"" + serviceType + "#" + method + "\"");
+	http->setAction("\"" + serviceType + "#" + method + "\"");
 
-    request.setMethod(method, serviceType);
+	request.setMethod(method, serviceType);
 
-    foreach(QString s, param.keys())
-        {
-            request.addMethodArgument(s, "", param.value(s));
-        }
+	foreach(QString s, param.keys()) {
+		request.addMethodArgument(s, "", param.value(s));
+	}
 
-    lastMethod = method;
-    this->http->submitRequest(request, this->controlUrl);
+	lastMethod = method;
+	this->http->submitRequest(request, this->controlUrl);
 }
 
-void BrisaControlPointService::getResponse() {
-    const QtSoapMessage &message = http->getResponse();
+void BrisaControlPointService::getResponse()
+{
+	const QtSoapMessage &message = http->getResponse();
 
-    if (message.isFault()) {
-        emit requestError("Error: " + message.faultString().toString(),
-                lastMethod);
-        return;
-    }
+	if (message.isFault()) {
+		emit requestError("Error: " + message.faultString().toString(),
+						  lastMethod);
+		return;
+	}
 
-    BrisaOutArgument returnMessage;
-    QList<BrisaArgument*> arguments =
-            this->getAction(this->lastMethod)->getArgumentList();
-    foreach (BrisaArgument * arg, arguments)
-        {
-            if (arg->getAttribute(BrisaArgument::Direction) == "out") {
-                QString argName = arg->getAttribute(BrisaArgument::ArgumentName);
-                returnMessage.insert(argName, message.method()[argName].toString());
-            }
-        }
-    emit requestFinished(returnMessage, lastMethod);
+	BrisaOutArgument returnMessage;
+	QList<BrisaArgument*> arguments =
+		this->getAction(this->lastMethod)->getArgumentList();
+	foreach (BrisaArgument * arg, arguments) {
+		if (arg->getAttribute(BrisaArgument::Direction) == "out") {
+			QString argName = arg->getAttribute(BrisaArgument::ArgumentName);
+			returnMessage.insert(argName, message.method()[argName].toString());
+		}
+	}
+	emit requestFinished(returnMessage, lastMethod);
 }
 

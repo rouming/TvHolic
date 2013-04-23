@@ -34,48 +34,49 @@
 
 class QTimer;
 
-namespace Brisa {
+namespace Brisa
+{
 
 class BrisaWebserver;
 
 class BRISA_CORE_EXPORT BrisaWebserverSession : public HttpSession
 {
-Q_OBJECT
+	Q_OBJECT
 public:
-    BrisaWebserverSession(BrisaWebserver *server, HttpSessionManager *parent);
-    ~BrisaWebserverSession();
+	BrisaWebserverSession(BrisaWebserver *server, HttpSessionManager *parent);
+	~BrisaWebserverSession();
 
-    int isRequestSupported(const HttpRequest &request) const;
+	int isRequestSupported(const HttpRequest &request) const;
 
 signals:
-    void responsePosted(HttpResponse);
-    void onEventReceived(HttpRequest request,BrisaWebserverSession* session);
+	void responsePosted(HttpResponse);
+	void onEventReceived(HttpRequest request,BrisaWebserverSession* session);
 
 public slots:
-    void respond(HttpResponse r, bool chunkedResponse = false);
-    void onTimeout();
+	void respond(HttpResponse r, bool chunkedResponse = false);
+	void onTimeout();
 
 protected:
-    bool hasEntityBody(const HttpRequest &request) throw(HttpResponse);
-    bool atEnd(HttpRequest &request, QByteArray &buffer) throw(HttpResponse);
-    void onRequest(const HttpRequest &request);
+	bool hasEntityBody(const HttpRequest &request) throw(HttpResponse);
+	bool atEnd(HttpRequest &request, QByteArray &buffer) throw(HttpResponse);
+	void onRequest(const HttpRequest &request);
 
-    void prepareResponse(HttpResponse &);
-    void writeEntityBody(const HttpResponse &, QTcpSocket *);
+	void prepareResponse(HttpResponse &);
+	void writeEntityBody(const HttpResponse &, QTcpSocket *);
 
-    void sessionStarted();
-    bool keepAlive();
+	void sessionStarted();
+	bool keepAlive();
 
 private:
-    BrisaWebserver *server;
-    QTimer *timer;
-    int entitySize;
+	BrisaWebserver *server;
+	QTimer *timer;
+	int entitySize;
 
-    int chunkedEntity;
-    QByteArray chunksBuffer;
-    HttpRequest lastRequest;
+	int chunkedEntity;
+	QByteArray chunksBuffer;
+	HttpRequest lastRequest;
 
-    bool useChunkedResponse;
+	bool useChunkedResponse;
 };
 
 } // namespace Brisa

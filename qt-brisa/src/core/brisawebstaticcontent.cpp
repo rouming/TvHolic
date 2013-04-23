@@ -29,9 +29,9 @@
 using namespace Brisa;
 
 BrisaWebStaticContent::BrisaWebStaticContent(const QByteArray &content,
-                                             QObject *parent) :
-        BrisaWebService(parent),
-        m_content(content)
+		QObject *parent) :
+	BrisaWebService(parent),
+	m_content(content)
 {
 }
 
@@ -41,32 +41,32 @@ BrisaWebStaticContent::~BrisaWebStaticContent()
 
 QByteArray BrisaWebStaticContent::content() const
 {
-    return m_content;
+	return m_content;
 }
 
 void BrisaWebStaticContent::setContent(const QByteArray &content)
 {
-    m_content = content;
+	m_content = content;
 }
 
 QByteArray BrisaWebStaticContent::contentType() const
 {
-    return m_contentType;
+	return m_contentType;
 }
 
 void BrisaWebStaticContent::setContentType(const QByteArray &contentType)
 {
-    m_contentType = contentType;
+	m_contentType = contentType;
 }
 
 void BrisaWebStaticContent::onRequest(const HttpRequest &request,
-                                      BrisaWebserverSession *session)
+									  BrisaWebserverSession *session)
 {
-    HttpResponse response(request.httpVersion());
+	HttpResponse response(request.httpVersion());
 
-    response.setHeader("CONTENT-TYPE", m_contentType);
-    response.setHeader("CONTENT-LENGTH", QByteArray::number(m_content.size()));
-    response.setEntityBody(m_content);
+	response.setHeader("CONTENT-TYPE", m_contentType);
+	response.setHeader("CONTENT-LENGTH", QByteArray::number(m_content.size()));
+	response.setEntityBody(m_content);
 
-    session->respond(response);
+	session->respond(response);
 }

@@ -59,23 +59,25 @@
                         QTime::currentTime().toString("hhmmsszzz").toStdString() << \
                         " " LEVEL " " << COLOR_RESET << MSG << "\n"
 
-static void brisaMessageWritter(QtMsgType type, const char *msg) {
-    switch (type) {
-    case QtWarningMsg:
-        LOG_WRITE(std::cout, COLOR_WARN, "WARN", msg);
-        break;
-    case QtCriticalMsg:
-        LOG_WRITE(std::cout, COLOR_CRITICAL, "CRIT", msg);
-        break;
-    case QtFatalMsg:
-        LOG_WRITE(std::cout, COLOR_FATAL, "FATAL", msg);
-        break;
-    case QtDebugMsg:
-        LOG_WRITE(std::cout, COLOR_DEBUG, "DEBUG", msg);
-        break;
-    }
+static void brisaMessageWritter(QtMsgType type, const char *msg)
+{
+	switch (type) {
+	case QtWarningMsg:
+		LOG_WRITE(std::cout, COLOR_WARN, "WARN", msg);
+		break;
+	case QtCriticalMsg:
+		LOG_WRITE(std::cout, COLOR_CRITICAL, "CRIT", msg);
+		break;
+	case QtFatalMsg:
+		LOG_WRITE(std::cout, COLOR_FATAL, "FATAL", msg);
+		break;
+	case QtDebugMsg:
+		LOG_WRITE(std::cout, COLOR_DEBUG, "DEBUG", msg);
+		break;
+	}
 }
 
-void brisaLogInitialize(void) {
-    qInstallMsgHandler(brisaMessageWritter);
+void brisaLogInitialize(void)
+{
+	qInstallMsgHandler(brisaMessageWritter);
 }

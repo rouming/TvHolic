@@ -40,14 +40,16 @@
 #include "brisaabstractservice.h"
 #include "brisaglobal.h"
 
-namespace Brisa {
+namespace Brisa
+{
 
-class BRISA_UPNP_EXPORT BrisaServiceXMLHandler {
+class BRISA_UPNP_EXPORT BrisaServiceXMLHandler
+{
 public:
-    BrisaServiceXMLHandler();
-    virtual ~BrisaServiceXMLHandler();
+	BrisaServiceXMLHandler();
+	virtual ~BrisaServiceXMLHandler();
 
-    void parseService(BrisaAbstractService *service, QIODevice *scpd);
+	void parseService(BrisaAbstractService *service, QIODevice *scpd);
 };
 
 }

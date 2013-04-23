@@ -32,28 +32,29 @@
 #include <QtNetwork>
 #include "brisawebservice.h"
 
-namespace Brisa {
+namespace Brisa
+{
 
-    class BrisaWebStaticContent: public BrisaWebService
-    {
-    Q_OBJECT
-    public:
-        BrisaWebStaticContent(const QByteArray &content = "", QObject *parent = 0);
-        ~BrisaWebStaticContent();
+class BrisaWebStaticContent: public BrisaWebService
+{
+	Q_OBJECT
+public:
+	BrisaWebStaticContent(const QByteArray &content = "", QObject *parent = 0);
+	~BrisaWebStaticContent();
 
-        QByteArray content() const;
-        void setContent(const QByteArray &content);
+	QByteArray content() const;
+	void setContent(const QByteArray &content);
 
-        QByteArray contentType() const;
-        void setContentType(const QByteArray &contentType);
+	QByteArray contentType() const;
+	void setContentType(const QByteArray &contentType);
 
-    protected:
-        void onRequest(const HttpRequest &request, BrisaWebserverSession *session);
+protected:
+	void onRequest(const HttpRequest &request, BrisaWebserverSession *session);
 
-    private:
-        QByteArray m_content;
-        QByteArray m_contentType;
-    };
+private:
+	QByteArray m_content;
+	QByteArray m_contentType;
+};
 
 }
 

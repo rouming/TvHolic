@@ -33,12 +33,12 @@
  */
 inline QString getUuid()
 {
-    // QUuid::toString returns a 38 characters string
-    return QUuid::createUuid().toString().remove(0, 1).remove(36, 1);
+	// QUuid::toString returns a 38 characters string
+	return QUuid::createUuid().toString().remove(0, 1).remove(36, 1);
 }
 
 inline QString getCompleteUuid()
 {
-    return QString("uuid:") + getUuid();
+	return QString("uuid:") + getUuid();
 }
 

@@ -24,31 +24,31 @@
  */
 class MediaServer : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit MediaServer(QWidget *parent = 0);
-    ~MediaServer();
+	explicit MediaServer(QWidget *parent = 0);
+	~MediaServer();
 
 public slots:
-    void addAudioFiles();
-    void addVideoFiles();
-    void audioFileAdded(QString file);
-    void videoFileAdded(QString file);
+	void addAudioFiles();
+	void addVideoFiles();
+	void audioFileAdded(QString file);
+	void videoFileAdded(QString file);
 
 private:
-    BrisaMediaServer *ms;
-    QPushButton *addAudioButton;
-    QPushButton *addVideoButton;
-    QListView *audioView;
-    QListView *videoView;
-    QVBoxLayout *lay1;
-    QVBoxLayout *lay2;
-    QHBoxLayout *mainLayout;
-    QStringListModel *audioModel;
-    QStringListModel *videoModel;
-    QStringList audioFiles;
-    QStringList videoFiles;
+	BrisaMediaServer *ms;
+	QPushButton *addAudioButton;
+	QPushButton *addVideoButton;
+	QListView *audioView;
+	QListView *videoView;
+	QVBoxLayout *lay1;
+	QVBoxLayout *lay2;
+	QHBoxLayout *mainLayout;
+	QStringListModel *audioModel;
+	QStringListModel *videoModel;
+	QStringList audioFiles;
+	QStringList videoFiles;
 };
 
 #endif // MEDIASERVER_H

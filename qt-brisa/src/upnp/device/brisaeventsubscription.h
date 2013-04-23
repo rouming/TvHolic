@@ -39,20 +39,22 @@
 
 #include <httpresponse.h>
 
-namespace Brisa {
+namespace Brisa
+{
 
-    class BRISA_UPNP_EXPORT BrisaEventSubscription: public BrisaAbstractEventSubscription {
-    Q_OBJECT
+class BRISA_UPNP_EXPORT BrisaEventSubscription: public BrisaAbstractEventSubscription
+{
+	Q_OBJECT
 
-    public:
-        BrisaEventSubscription(const QString &sid, const QStringList &callbackUrls,
-                const int &timeout = -1, // <0 = infinite
-                QObject *parent = 0);
+public:
+	BrisaEventSubscription(const QString &sid, const QStringList &callbackUrls,
+						   const int &timeout = -1, // <0 = infinite
+						   QObject *parent = 0);
 
-        void renew(const int &newTimeout = -1); // <0 = infinite
-        HttpResponse getAcceptSubscriptionResponse() const;
-        HttpResponse getAcceptUnsubscriptionResponse() const;
-    };
+	void renew(const int &newTimeout = -1); // <0 = infinite
+	HttpResponse getAcceptSubscriptionResponse() const;
+	HttpResponse getAcceptUnsubscriptionResponse() const;
+};
 
 }
 

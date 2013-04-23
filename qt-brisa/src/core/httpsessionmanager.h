@@ -30,29 +30,30 @@
 #include <QMutex>
 #include "httpserver.h"
 
-namespace Brisa {
+namespace Brisa
+{
 
 class BRISA_CORE_EXPORT HttpSessionManager : public QThread
 {
-Q_OBJECT
+	Q_OBJECT
 public:
-    explicit HttpSessionManager(HttpServer *parent);
+	explicit HttpSessionManager(HttpServer *parent);
 
-    void run();
+	void run();
 
-    void addSession(int socketDescriptor);
-    void releaseSession(HttpSession *);
+	void addSession(int socketDescriptor);
+	void releaseSession(HttpSession *);
 
 signals:
-    void newConnection(int);
+	void newConnection(int);
 
 private slots:
-    void onNewConnection(int socketDescriptor);
+	void onNewConnection(int socketDescriptor);
 
 private:
-    HttpServer *server;
-    QList<HttpSession *> pool;
-    QMutex mutex;
+	HttpServer *server;
+	QList<HttpSession *> pool;
+	QMutex mutex;
 };
 
 } // namespace Brisa

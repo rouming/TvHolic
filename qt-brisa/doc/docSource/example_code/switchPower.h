@@ -16,70 +16,66 @@ using namespace BrisaUpnp;
 // The Actions
 class GetStatus : public BrisaAction
 {
-    public:
-        GetStatus(BrisaService *service) : BrisaAction("GetStatus", service) {}
+public:
+	GetStatus(BrisaService *service) : BrisaAction("GetStatus", service) {}
 
-    private:
-        QMap<QString, QString> run(const QMap<QString, QString> &inArguments)
-        {
-            Q_UNUSED(inArguments)
+private:
+	QMap<QString, QString> run(const QMap<QString, QString> &inArguments) {
+		Q_UNUSED(inArguments)
 
-            QMap<QString, QString> outArgs;
-            outArgs.insert("ResultStatus", this->getStateVariable("Status")
-                                               ->getAttribute(BrisaStateVariable::Value));
-            return outArgs;
-        }
+		QMap<QString, QString> outArgs;
+		outArgs.insert("ResultStatus", this->getStateVariable("Status")
+					   ->getAttribute(BrisaStateVariable::Value));
+		return outArgs;
+	}
 };
 
 class GetTarget : public BrisaAction
 {
-    public:
-        GetTarget(BrisaService *service) : BrisaAction("GetTarget", service) {}
+public:
+	GetTarget(BrisaService *service) : BrisaAction("GetTarget", service) {}
 
-    private:
-        QMap<QString, QString> run(const QMap<QString, QString> &inArguments)
-        {
-            Q_UNUSED(inArguments)
+private:
+	QMap<QString, QString> run(const QMap<QString, QString> &inArguments) {
+		Q_UNUSED(inArguments)
 
-            QMap<QString, QString> outArgs;
-            outArgs.insert("RetTargetValue", this->getStateVariable("Target")
-                                                 ->getAttribute(BrisaStateVariable::Value));
-            return outArgs;
-        }
+		QMap<QString, QString> outArgs;
+		outArgs.insert("RetTargetValue", this->getStateVariable("Target")
+					   ->getAttribute(BrisaStateVariable::Value));
+		return outArgs;
+	}
 };
 
 class SetTarget : public BrisaAction
 {
-    public:
-        SetTarget(BrisaService *service) : BrisaAction("SetTarget", service) {}
+public:
+	SetTarget(BrisaService *service) : BrisaAction("SetTarget", service) {}
 
-    private:
-        QMap<QString, QString> run(const QMap<QString, QString> &inArguments)
-        {
-            this->getStateVariable("Target")->setAttribute(BrisaStateVariable::Value,
-                                                           inArguments["NewTargetValue"]);
-            this->getStateVariable("Status")->setAttribute(BrisaStateVariable::Value,
-                                                           inArguments["NewTargetValue"]);
+private:
+	QMap<QString, QString> run(const QMap<QString, QString> &inArguments) {
+		this->getStateVariable("Target")->setAttribute(BrisaStateVariable::Value,
+				inArguments["NewTargetValue"]);
+		this->getStateVariable("Status")->setAttribute(BrisaStateVariable::Value,
+				inArguments["NewTargetValue"]);
 
-            QMap<QString, QString> outArgs;
-            return outArgs;
-        }
+		QMap<QString, QString> outArgs;
+		return outArgs;
+	}
 };
 
 // The Service
 class SwitchPower : public BrisaService
 {
-    public:
-        SwitchPower() : BrisaService(SERVICE_TYPE,
-                                     SERVICE_ID,
-                                     SERVICE_XML_PATH,
-                                     SERVICE_CONTROL,
-                                     SERVICE_EVENT_SUB)
-        {
-            addAction(new SetTarget(this));
-            addAction(new GetTarget(this));
-            addAction(new GetStatus(this));
-        }
+public:
+	SwitchPower() : BrisaService(SERVICE_TYPE,
+									 SERVICE_ID,
+									 SERVICE_XML_PATH,
+									 SERVICE_CONTROL,
+									 SERVICE_EVENT_SUB) {
+		addAction(new SetTarget(this));
+		addAction(new GetTarget(this));
+		addAction(new GetStatus(this));
+	}
 };
 
 #endif /* _SWITCHPOWER_H_ */

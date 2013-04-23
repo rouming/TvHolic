@@ -31,6 +31,6 @@
 using namespace Brisa;
 
 BrisaAbstractEventMessage::BrisaAbstractEventMessage(QObject *parent) :
-        QObject(parent)
+	QObject(parent)
 {
 }

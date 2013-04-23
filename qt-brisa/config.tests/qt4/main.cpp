@@ -6,6 +6,6 @@
 
 int main(int, char **)
 {
-    QObject();
-    return 0;
+	QObject();
+	return 0;
 }

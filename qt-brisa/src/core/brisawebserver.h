@@ -36,45 +36,46 @@
 
 #include "httpserver.h"
 
-namespace Brisa {
+namespace Brisa
+{
 
 /*!
  *  \brief The BrisaWebserver class is a web server implementation.
  *
  *  BrisaWebServer implements a Web Server using libQxt.
  */
-    class BrisaWebService;
-    class BrisaWebserverSession;
+class BrisaWebService;
+class BrisaWebserverSession;
 
-    class BRISA_CORE_EXPORT BrisaWebserver: public HttpServer
-    {
-    Q_OBJECT
-    public:
-        BrisaWebserver(const QHostAddress &host, quint16 port);
-        ~BrisaWebserver();
+class BRISA_CORE_EXPORT BrisaWebserver: public HttpServer
+{
+	Q_OBJECT
+public:
+	BrisaWebserver(const QHostAddress &host, quint16 port);
+	~BrisaWebserver();
 
-        void addService(QByteArray path, BrisaWebService *service);
-        void removeService(QByteArray path);
-        BrisaWebService *service(QByteArray path) const;
+	void addService(QByteArray path, BrisaWebService *service);
+	void removeService(QByteArray path);
+	BrisaWebService *service(QByteArray path) const;
 
-    protected:
-        HttpServerFactory &factory();
+protected:
+	HttpServerFactory &factory();
 
-    private:
-        class Factory: public HttpServerFactory
-        {
-        public:
-            Factory(BrisaWebserver *server) : server(server) {}
-            HttpSession *generateSessionHandler(HttpSessionManager *parent);
+private:
+	class Factory: public HttpServerFactory
+	{
+	public:
+		Factory(BrisaWebserver *server) : server(server) {}
+		HttpSession *generateSessionHandler(HttpSessionManager *parent);
 
-        private:
-            BrisaWebserver *server;
-        } m_factory;
+	private:
+		BrisaWebserver *server;
+	} m_factory;
 
-        // QHash and QList are reentrant, not thread-safe
-        mutable QMutex mutex;
-        QHash<QByteArray, BrisaWebService *> services;
-    };
+	// QHash and QList are reentrant, not thread-safe
+	mutable QMutex mutex;
+	QHash<QByteArray, BrisaWebService *> services;
+};
 
 }
 

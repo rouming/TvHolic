@@ -32,79 +32,85 @@ using namespace Brisa;
 
 BrisaSSDPClient::BrisaSSDPClient(QObject *parent) :
 	QObject(parent),
-    running(false)
+	running(false)
 {
 }
 
-BrisaSSDPClient::~BrisaSSDPClient() {
-    if (isRunning())
-        stop();
+BrisaSSDPClient::~BrisaSSDPClient()
+{
+	if (isRunning())
+		stop();
 
-    delete this->udpListener;
+	delete this->udpListener;
 }
 
-void BrisaSSDPClient::start() {
-    if (!isRunning()) {
-        this->udpListener = new BrisaUdpListener("239.255.255.250", 1900,
-                                                 "BrisaSSDPClient");
-        connect(this->udpListener, SIGNAL(readyRead()), this, SLOT(datagramReceived()));
-        this->udpListener->start();
-        running = true;
-    } else {
-        qDebug() << "Brisa SSDP Client: Already running!";
-    }
+void BrisaSSDPClient::start()
+{
+	if (!isRunning()) {
+		this->udpListener = new BrisaUdpListener("239.255.255.250", 1900,
+				"BrisaSSDPClient");
+		connect(this->udpListener, SIGNAL(readyRead()), this, SLOT(datagramReceived()));
+		this->udpListener->start();
+		running = true;
+	} else {
+		qDebug() << "Brisa SSDP Client: Already running!";
+	}
 }
 
-void BrisaSSDPClient::stop() {
-    if (isRunning()) {
-        this->udpListener->disconnectFromHost();;
-        running = false;
-    } else {
-        qDebug() << "Brisa SSDP Client: Already stopped!";
-    }
+void BrisaSSDPClient::stop()
+{
+	if (isRunning()) {
+		this->udpListener->disconnectFromHost();;
+		running = false;
+	} else {
+		qDebug() << "Brisa SSDP Client: Already stopped!";
+	}
 }
 
-bool BrisaSSDPClient::isRunning() const {
-    return running;
+bool BrisaSSDPClient::isRunning() const
+{
+	return running;
 }
 
-void BrisaSSDPClient::datagramReceived() {
-    while (this->udpListener->hasPendingDatagrams()) {
-        QByteArray *datagram = new QByteArray();
+void BrisaSSDPClient::datagramReceived()
+{
+	while (this->udpListener->hasPendingDatagrams()) {
+		QByteArray *datagram = new QByteArray();
 
-        datagram->resize(udpListener->pendingDatagramSize());
-        udpListener->readDatagram(datagram->data(), datagram->size());
+		datagram->resize(udpListener->pendingDatagramSize());
+		udpListener->readDatagram(datagram->data(), datagram->size());
 
-        QString temp(datagram->data());
-        QHttpRequestHeader *parser = new QHttpRequestHeader(temp);
+		QString temp(datagram->data());
+		QHttpRequestHeader *parser = new QHttpRequestHeader(temp);
 
-        notifyReceived(parser);
+		notifyReceived(parser);
 
-        delete datagram;
-        delete parser;
-    }
+		delete datagram;
+		delete parser;
+	}
 
 }
 
-void BrisaSSDPClient::notifyReceived(QHttpRequestHeader *datagram) {
-    if (!datagram->hasKey("nts"))
-        return;
+void BrisaSSDPClient::notifyReceived(QHttpRequestHeader *datagram)
+{
+	if (!datagram->hasKey("nts"))
+		return;
 
-    if (datagram->value("nts") == "ssdp:alive") {
-        emit newDeviceEvent(datagram->value("usn"),
-                            datagram->value("location"), datagram->value("nt"),
-                            datagram->value("ext"), datagram->value("server"),
-                            datagram->value("cacheControl"));
-        qDebug() << "Brisa SSDP Client: Received alive from " <<
-                datagram->value("usn") << "";
+	if (datagram->value("nts") == "ssdp:alive") {
+		emit newDeviceEvent(datagram->value("usn"),
+							datagram->value("location"), datagram->value("nt"),
+							datagram->value("ext"), datagram->value("server"),
+							datagram->value("cacheControl"));
+		qDebug() << "Brisa SSDP Client: Received alive from " <<
+				 datagram->value("usn") << "";
 
-    } else if (datagram->value("nts") == "ssdp:byebye") {
-        emit removedDeviceEvent(datagram->value("usn"));
-        qDebug() << "Brisa SSDP Client: Received byebye from " <<
-                datagram->value("usn") << "";
+	} else if (datagram->value("nts") == "ssdp:byebye") {
+		emit removedDeviceEvent(datagram->value("usn"));
+		qDebug() << "Brisa SSDP Client: Received byebye from " <<
+				 datagram->value("usn") << "";
 
-    } else {
-        qDebug() << "Brisa SSDP Client: Received unknown subtype: " <<
-                datagram->value("nts") << "";
-    }
+	} else {
+		qDebug() << "Brisa SSDP Client: Received unknown subtype: " <<
+				 datagram->value("nts") << "";
+	}
 }

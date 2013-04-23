@@ -39,9 +39,10 @@
 #include "brisaicon.h"
 #include "brisaglobal.h"
 
-namespace Brisa {
+namespace Brisa
+{
 
-    class BrisaWebserver;
+class BrisaWebserver;
 
 class BrisaSSDPServer;
 
@@ -65,274 +66,275 @@ class BrisaSSDPServer;
  *
  *  \sa Brisa::BrisaService
  */
-class BRISA_UPNP_EXPORT BrisaDevice: public QObject {
-Q_OBJECT
+class BRISA_UPNP_EXPORT BrisaDevice: public QObject
+{
+	Q_OBJECT
 
 public:
-    /*!
-     *  Creates a BrisaDevice with the given parent QObject.
-     */
-    BrisaDevice(QObject *parent = 0);
+	/*!
+	 *  Creates a BrisaDevice with the given parent QObject.
+	 */
+	BrisaDevice(QObject *parent = 0);
 
-    /*!
-     *  Copy constructor.
-     */
-    BrisaDevice(const BrisaDevice &dev);
+	/*!
+	 *  Copy constructor.
+	 */
+	BrisaDevice(const BrisaDevice &dev);
 
-    /*!
-     *  Creates a BrisaDevice with the given device information.
-     */
-    BrisaDevice(const QString &deviceType, const QString &friendlyName = "",
-            const QString &manufacturer = "", const QString &manufacturerURL = "",
-	    const QString &modelDescription = "", const QString &modelName = "",
-	    const QString &modelNumber = "", const QString &modelURL = "",
-	    const QString &serialNumber = "", const QString &UDN = "",
-	    const QString &UPC = "", const QString &presentationURL = "",
-	    QObject *parent = 0);
+	/*!
+	 *  Creates a BrisaDevice with the given device information.
+	 */
+	BrisaDevice(const QString &deviceType, const QString &friendlyName = "",
+				const QString &manufacturer = "", const QString &manufacturerURL = "",
+				const QString &modelDescription = "", const QString &modelName = "",
+				const QString &modelNumber = "", const QString &modelURL = "",
+				const QString &serialNumber = "", const QString &UDN = "",
+				const QString &UPC = "", const QString &presentationURL = "",
+				QObject *parent = 0);
 
-    /*!
-     *  Destructor for BrisaDevice.
-     *  Stops the device if running.
-     */
-    virtual ~BrisaDevice();
+	/*!
+	 *  Destructor for BrisaDevice.
+	 *  Stops the device if running.
+	 */
+	virtual ~BrisaDevice();
 
-    /*!
-     *  Assigns dev to this BrisaDevice and returns a copy.
-     */
-    BrisaDevice &operator=(const BrisaDevice &dev);
+	/*!
+	 *  Assigns dev to this BrisaDevice and returns a copy.
+	 */
+	BrisaDevice &operator=(const BrisaDevice &dev);
 
-    typedef enum {
-        Major,
-        Minor,
-        UrlBase,
-        DeviceType,
-        FriendlyName,
-        Manufacturer,
-        ManufacturerUrl,
-        ModelDescription,
-        ModelName,
-        ModelNumber,
-        ModelUrl,
-        SerialNumber,
-        Udn,
-        Upc,
-        PresentationUrl,
-        FileAddress,
-        Location,
-        Server,
-        IpAddress,
-        Port,
-        Running
-    } xmlTags;
+	typedef enum {
+		Major,
+		Minor,
+		UrlBase,
+		DeviceType,
+		FriendlyName,
+		Manufacturer,
+		ManufacturerUrl,
+		ModelDescription,
+		ModelName,
+		ModelNumber,
+		ModelUrl,
+		SerialNumber,
+		Udn,
+		Upc,
+		PresentationUrl,
+		FileAddress,
+		Location,
+		Server,
+		IpAddress,
+		Port,
+		Running
+	} xmlTags;
 
-    /*!
-     *  Attribute setter.
-     *  \sa getAttribute()
-     */
-    void setAttribute(xmlTags key, const QString &value);
+	/*!
+	 *  Attribute setter.
+	 *  \sa getAttribute()
+	 */
+	void setAttribute(xmlTags key, const QString &value);
 
-    /*!
-     *  Attribute getter.
-     *  \sa setAttribute()
-     */
-    QString getAttribute(xmlTags key) const;
+	/*!
+	 *  Attribute getter.
+	 *  \sa setAttribute()
+	 */
+	QString getAttribute(xmlTags key) const;
 
-    /*!
-     *  Call this method to add a icon to the device.
-     */
-    void addIcon(const QString &mimetype = "", const QString &width = "",
-            const QString &height = "", const QString &depth = "",
-            const QString &url = "");
+	/*!
+	 *  Call this method to add a icon to the device.
+	 */
+	void addIcon(const QString &mimetype = "", const QString &width = "",
+				 const QString &height = "", const QString &depth = "",
+				 const QString &url = "");
 
-    /*!
-     *  Creates and adds a service to the device with the given information.
-     */
-    void addService(const QString &serviceType = "", const QString &serviceId =
-            "", const QString &SCPDURL = "", const QString &controlURL = "",
-            const QString &eventSubURL = "");
+	/*!
+	 *  Creates and adds a service to the device with the given information.
+	 */
+	void addService(const QString &serviceType = "", const QString &serviceId =
+						"", const QString &SCPDURL = "", const QString &controlURL = "",
+					const QString &eventSubURL = "");
 
-    /*!
-     *  Overloads addService().
-     *  Create a \a BrisaService and add it to the device. We recommend using this method for better
-     *  object orientation.
-     *  \sa Brisa::BrisaService
-     */
-    void addService(BrisaService *serv);
+	/*!
+	 *  Overloads addService().
+	 *  Create a \a BrisaService and add it to the device. We recommend using this method for better
+	 *  object orientation.
+	 *  \sa Brisa::BrisaService
+	 */
+	void addService(BrisaService *serv);
 
-    /*!
-     *  Creates and adds a embedded device with the given information to the device.
-     */
-    void addEmbeddedDevice(const QString &deviceType = "",
-            const QString &friendlyName = "", const QString &manufacturer = "",
-            const QString &manufacturerURL = "",
-            const QString &modelDescription = "",
-            const QString &modelName = "", const QString &modelNumber = "",
-            const QString &modelURL = "", const QString &serialNumber = "",
-            const QString &UDN = "", const QString &UPC = "",
-            const QString &presentationURL = "");
+	/*!
+	 *  Creates and adds a embedded device with the given information to the device.
+	 */
+	void addEmbeddedDevice(const QString &deviceType = "",
+						   const QString &friendlyName = "", const QString &manufacturer = "",
+						   const QString &manufacturerURL = "",
+						   const QString &modelDescription = "",
+						   const QString &modelName = "", const QString &modelNumber = "",
+						   const QString &modelURL = "", const QString &serialNumber = "",
+						   const QString &UDN = "", const QString &UPC = "",
+						   const QString &presentationURL = "");
 
-    /*!
-     *  Overloads addEmbeddedDevice()
-     *  Create a new \a BrisaDevice and call this method to add it as a embedded device to a root
-     *  device. We recommend using this method for better object orientation.
-     */
-    void addEmbeddedDevice(BrisaDevice *newEmbeddedDevice);
+	/*!
+	 *  Overloads addEmbeddedDevice()
+	 *  Create a new \a BrisaDevice and call this method to add it as a embedded device to a root
+	 *  device. We recommend using this method for better object orientation.
+	 */
+	void addEmbeddedDevice(BrisaDevice *newEmbeddedDevice);
 
-    /*!
-     *  Returns the icon list.
-     *
-     *  \sa getEmbeddedDeviceList() , getServiceList()
-     */
-    QList<BrisaIcon *> getIconList() const;
+	/*!
+	 *  Returns the icon list.
+	 *
+	 *  \sa getEmbeddedDeviceList() , getServiceList()
+	 */
+	QList<BrisaIcon *> getIconList() const;
 
-    /*!
-     *  Returns the service list.
-     *
-     *  \sa getEmbeddedDeviceList() , getIconList()
-     */
-    QList<BrisaService *> getServiceList() const;
+	/*!
+	 *  Returns the service list.
+	 *
+	 *  \sa getEmbeddedDeviceList() , getIconList()
+	 */
+	QList<BrisaService *> getServiceList() const;
 
-    /*!
-     *  Returns the embedded device list.
-     *
-     *  \sa getIconList() , getServiceList()
-     */
-    QList<BrisaDevice *> getEmbeddedDeviceList() const;
+	/*!
+	 *  Returns the embedded device list.
+	 *
+	 *  \sa getIconList() , getServiceList()
+	 */
+	QList<BrisaDevice *> getEmbeddedDeviceList() const;
 
-    /*!
-     *  Getter for BrisaService in the service list.
-     */
-    BrisaService *getServiceById(const QString &serviceId);
+	/*!
+	 *  Getter for BrisaService in the service list.
+	 */
+	BrisaService *getServiceById(const QString &serviceId);
 
-    /*!
-     *  Getter for BrisaService in the service list.
-     */
-    BrisaService *getServiceByType(const QString &serviceType);
+	/*!
+	 *  Getter for BrisaService in the service list.
+	 */
+	BrisaService *getServiceByType(const QString &serviceType);
 
-    /*!
-     *  Clears the device information, including services, icons and embedded devices.
-     */
-    void clear();
+	/*!
+	 *  Clears the device information, including services, icons and embedded devices.
+	 */
+	void clear();
 
-    /*!
-     *  Sends the ssdp:alive messages for root device, embedded devices and services according to the
-     *  UPnP 1.0 especification.
-     */
-    void doNotify();
+	/*!
+	 *  Sends the ssdp:alive messages for root device, embedded devices and services according to the
+	 *  UPnP 1.0 especification.
+	 */
+	void doNotify();
 
-    /*!
-     *  Sends the ssdp:byebye messages for root device, embedded devices and services according to the
-     *  UPnP 1.0 especification.
-     */
-    void doByeBye();
+	/*!
+	 *  Sends the ssdp:byebye messages for root device, embedded devices and services according to the
+	 *  UPnP 1.0 especification.
+	 */
+	void doByeBye();
 
-    /*!
-     *  Call this method to join the network and start the device.
-     *
-     *  \sa stop()
-     */
-    void start();
+	/*!
+	 *  Call this method to join the network and start the device.
+	 *
+	 *  \sa stop()
+	 */
+	void start();
 
-    /*!
-     *  Stops the device and leaves the network.
-     *
-     *  \sa start()
-     */
-    void stop();
+	/*!
+	 *  Stops the device and leaves the network.
+	 *
+	 *  \sa start()
+	 */
+	void stop();
 
-    int threadsNumber() const;
-    void setThreadsNumber(int);
+	int threadsNumber() const;
+	void setThreadsNumber(int);
 
-    QByteArray addWebservice(QByteArray pathSuffix, BrisaWebService *service);
-    void removeWebservice(const QByteArray &path);
+	QByteArray addWebservice(QByteArray pathSuffix, BrisaWebService *service);
+	void removeWebservice(const QByteArray &path);
 
 public slots:
-    /*!
-     *  Connects to the msearchRequestReceived() signal comming from the ssdp module. It parses
-     *  the search type and responds accordingly.
-     *
-     *  \sa respondMSearchAll()
-     */
-    void respondMSearch(const QString &st, const QString &senderIp,
-            quint16 senderPort);
+	/*!
+	 *  Connects to the msearchRequestReceived() signal comming from the ssdp module. It parses
+	 *  the search type and responds accordingly.
+	 *
+	 *  \sa respondMSearchAll()
+	 */
+	void respondMSearch(const QString &st, const QString &senderIp,
+						quint16 senderPort);
 
 private:
-    /*!
-     *  Creates a temporary XML file containning the device information.
-     *  \sa deviceGenerator()
-     */
-    void xmlGenerator();
+	/*!
+	 *  Creates a temporary XML file containning the device information.
+	 *  \sa deviceGenerator()
+	 */
+	void xmlGenerator();
 
-    /*!
-     *  Creates the UrlBase attribute according to local IP address and a random port.
-     */
-    void buildUrlBase();
+	/*!
+	 *  Creates the UrlBase attribute according to local IP address and a random port.
+	 */
+	void buildUrlBase();
 
-    /*!
-     *  Private function to discover the network address currently used by the machine where control
-     *  point is running and select an free port to use with BrisaWebServer.
-     */
-    void discoverNetworkAddress();
+	/*!
+	 *  Private function to discover the network address currently used by the machine where control
+	 *  point is running and select an free port to use with BrisaWebServer.
+	 */
+	void discoverNetworkAddress();
 
-    /*!
-     *  Generates the webserver tree according to the services present in the device.
-     *  Eg:
-     *     Suppose we have two services, "Gate" and "LightSwitch". So /Gate and /LightSwitch will be
-     *  valid URLs in the webserver.
-     */
-    void buildWebServerTree();
+	/*!
+	 *  Generates the webserver tree according to the services present in the device.
+	 *  Eg:
+	 *     Suppose we have two services, "Gate" and "LightSwitch". So /Gate and /LightSwitch will be
+	 *  valid URLs in the webserver.
+	 */
+	void buildWebServerTree();
 
-    /*!
-     *  Starts the webserver.
-     */
-    void startWebServer();
+	/*!
+	 *  Starts the webserver.
+	 */
+	void startWebServer();
 
-    /*!
-     *  Responds the msearch in case of a "ssdp:all" search type.
-     *
-     *  \sa respondMSearch()
-     */
-    void respondMSearchAll(const QString &senderIp, quint16 senderPort,
-            const QString &sDate);
+	/*!
+	 *  Responds the msearch in case of a "ssdp:all" search type.
+	 *
+	 *  \sa respondMSearch()
+	 */
+	void respondMSearchAll(const QString &senderIp, quint16 senderPort,
+						   const QString &sDate);
 
-    /*!
-     *  Returns true if the device is running.
-     */
-    bool isRunning();
+	/*!
+	 *  Returns true if the device is running.
+	 */
+	bool isRunning();
 
-    QList<BrisaIcon*> iconList;
-    QList<BrisaService *> serviceList;
-    QList<BrisaDevice *> embeddedDeviceList;
+	QList<BrisaIcon*> iconList;
+	QList<BrisaService *> serviceList;
+	QList<BrisaDevice *> embeddedDeviceList;
 
-    QString major;
-    QString minor;
-    QString urlBase;
-    QString deviceType;
-    QString friendlyName;
-    QString manufacturer;
-    QString manufacturerUrl;
-    QString modelDescription;
-    QString modelName;
-    QString modelNumber;
-    QString modelUrl;
-    QString serialNumber;
-    QString udn;
-    QString upc;
-    QString presentationUrl;
+	QString major;
+	QString minor;
+	QString urlBase;
+	QString deviceType;
+	QString friendlyName;
+	QString manufacturer;
+	QString manufacturerUrl;
+	QString modelDescription;
+	QString modelName;
+	QString modelNumber;
+	QString modelUrl;
+	QString serialNumber;
+	QString udn;
+	QString upc;
+	QString presentationUrl;
 
-    QString location;
-    QString server;
-    QString ipAddress;
-    quint16 port;
+	QString location;
+	QString server;
+	QString ipAddress;
+	quint16 port;
 
-    QString attribute;
-    QString fileAddress;
+	QString attribute;
+	QString fileAddress;
 
-    QTemporaryFile descriptionFile;
+	QTemporaryFile descriptionFile;
 
-    BrisaSSDPServer *ssdp;
-    BrisaWebserver *webserver;
-    bool running;
+	BrisaSSDPServer *ssdp;
+	BrisaWebserver *webserver;
+	bool running;
 };
 
 }

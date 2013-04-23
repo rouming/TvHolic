@@ -32,47 +32,48 @@
 
 #include "brisawebservice.h"
 
-namespace Brisa {
+namespace Brisa
+{
 
-    class BRISA_CORE_EXPORT BrisaWebFile: public Brisa::BrisaWebService
-    {
-    Q_OBJECT
-    public:
-        BrisaWebFile(const QString &filePath = QString(), QObject *parent = 0);
-        ~BrisaWebFile();
+class BRISA_CORE_EXPORT BrisaWebFile: public Brisa::BrisaWebService
+{
+	Q_OBJECT
+public:
+	BrisaWebFile(const QString &filePath = QString(), QObject *parent = 0);
+	~BrisaWebFile();
 
-        QString fileName() const;
-        void setFile(const QString &fileName);
+	QString fileName() const;
+	void setFile(const QString &fileName);
 
-        QByteArray contentType() const;
-        void setContentType(const QByteArray &);
+	QByteArray contentType() const;
+	void setContentType(const QByteArray &);
 
-        bool useChunkedEntities() const;
-        void setUseChunkedEntities(bool);
+	bool useChunkedEntities() const;
+	void setUseChunkedEntities(bool);
 
-    protected:
-        void onRequest(const HttpRequest &request, BrisaWebserverSession *session);
+protected:
+	void onRequest(const HttpRequest &request, BrisaWebserverSession *session);
 
-    private:
-        QString m_fileName;
-        QByteArray m_contentType;
-        bool m_useChunkedEntities;
-    };
+private:
+	QString m_fileName;
+	QByteArray m_contentType;
+	bool m_useChunkedEntities;
+};
 
-    inline QString BrisaWebFile::fileName() const
-    {
-        return m_fileName;
-    }
+inline QString BrisaWebFile::fileName() const
+{
+	return m_fileName;
+}
 
-    inline QByteArray BrisaWebFile::contentType() const
-    {
-        return m_contentType;
-    }
+inline QByteArray BrisaWebFile::contentType() const
+{
+	return m_contentType;
+}
 
-    inline bool BrisaWebFile::useChunkedEntities() const
-    {
-        return m_useChunkedEntities;
-    }
+inline bool BrisaWebFile::useChunkedEntities() const
+{
+	return m_useChunkedEntities;
+}
 
 }
 

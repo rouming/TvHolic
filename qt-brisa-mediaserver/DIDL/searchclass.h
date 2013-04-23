@@ -8,14 +8,14 @@
 class SearchClass
 {
 public:
-    SearchClass(QString className, bool includeDerived = false,
-                QString classFriendlyName = "");
-    QDomElement getElement();
+	SearchClass(QString className, bool includeDerived = false,
+				QString classFriendlyName = "");
+	QDomElement getElement();
 
 private:
-    QString className;
-    QString classFriendlyName;
-    bool includeDerived;
+	QString className;
+	QString classFriendlyName;
+	bool includeDerived;
 };
 
 #endif // SEARCHCLASS_H

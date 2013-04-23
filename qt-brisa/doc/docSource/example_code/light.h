@@ -28,25 +28,25 @@ using namespace BrisaUpnp;
 
 class Widget : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    Widget(QWidget *parent = 0);
-    ~Widget();
+	Widget(QWidget *parent = 0);
+	~Widget();
 
 public slots:
-    void statechanged(BrisaStateVariable *);
+	void statechanged(BrisaStateVariable *);
 
 private:
-    BrisaDevice binaryLight;
-    BrisaStateVariable *status;
-    BrisaStateVariable *target;
-    
-    //METHODS FOR UDN CREATION
-    QString createUdn();
-    int get1RandomNumber();
-    int get2RandomNumber();
-    int get3RandomNumber();
+	BrisaDevice binaryLight;
+	BrisaStateVariable *status;
+	BrisaStateVariable *target;
+
+	//METHODS FOR UDN CREATION
+	QString createUdn();
+	int get1RandomNumber();
+	int get2RandomNumber();
+	int get3RandomNumber();
 };
 
 #endif // LIGHT_H

@@ -45,169 +45,179 @@
 using namespace Brisa;
 
 BrisaConfigurationManager::BrisaConfigurationManager(const QString &configPath,
-        const QHash<QString, QString> &state) {
-    this->state = state;
-    this->configPath = configPath;
-    this->fileName = CONFIG_FILE_NAME;
-    this->parameterSeparator = ".";
-    this->directAccess = false;
+		const QHash<QString, QString> &state)
+{
+	this->state = state;
+	this->configPath = configPath;
+	this->fileName = CONFIG_FILE_NAME;
+	this->parameterSeparator = ".";
+	this->directAccess = false;
 }
 
-void BrisaConfigurationManager::setDirectAccess(bool access) {
-    this->directAccess = access;
+void BrisaConfigurationManager::setDirectAccess(bool access)
+{
+	this->directAccess = access;
 }
 
-bool BrisaConfigurationManager::getDirectAccess() {
-    return this->directAccess;
+bool BrisaConfigurationManager::getDirectAccess()
+{
+	return this->directAccess;
 }
 
-void BrisaConfigurationManager::update() {
-    QFile file(this->configPath + this->fileName);
-    file.open(QIODevice::ReadOnly);
+void BrisaConfigurationManager::update()
+{
+	QFile file(this->configPath + this->fileName);
+	file.open(QIODevice::ReadOnly);
 
-    QDataStream in(&file);
-    in >> this->state;
+	QDataStream in(&file);
+	in >> this->state;
 }
 
-void BrisaConfigurationManager::save() {
-    QFile file(this->configPath + this->fileName);
-    file.open(QIODevice::WriteOnly);
+void BrisaConfigurationManager::save()
+{
+	QFile file(this->configPath + this->fileName);
+	file.open(QIODevice::WriteOnly);
 
-    QDataStream out(&file);
-    out << this->state;
+	QDataStream out(&file);
+	out << this->state;
 }
 
 QString BrisaConfigurationManager::getParameter(const QString &section,
-        const QString &parameter) {
+		const QString &parameter)
+{
 
-    if (getDirectAccess())
-        update();
+	if (getDirectAccess())
+		update();
 
-    return this->state.value(section + parameterSeparator + parameter);
+	return this->state.value(section + parameterSeparator + parameter);
 }
 
 void BrisaConfigurationManager::setParameter(const QString &section,
-        const QString &parameter, const QString &parValue) {
+		const QString &parameter, const QString &parValue)
+{
 
-    QString str(section + parameterSeparator + parameter);
+	QString str(section + parameterSeparator + parameter);
 
-    if ((parValue == "") and (this->state.contains(str))) {
-        this->state.remove(str);
-    } else {
-        this->state[str] = parValue;
-    }
+	if ((parValue == "") and (this->state.contains(str))) {
+		this->state.remove(str);
+	} else {
+		this->state[str] = parValue;
+	}
 
-    if (getDirectAccess())
-        this->save();
+	if (getDirectAccess())
+		this->save();
 
 }
 
-QList<QString> BrisaConfigurationManager::getSectionNames() {
+QList<QString> BrisaConfigurationManager::getSectionNames()
+{
 
-    if (this->getDirectAccess())
-        this->update();
+	if (this->getDirectAccess())
+		this->update();
 
-    QList<QString> sections = this->state.keys();
+	QList<QString> sections = this->state.keys();
 
-    for (int i = 0; i < sections.size(); ++i) {
-        sections.replace(i, sections.at(i).split('.').value(0));
-    }
+	for (int i = 0; i < sections.size(); ++i) {
+		sections.replace(i, sections.at(i).split('.').value(0));
+	}
 
-    QSet<QString> set = sections.toSet();
-    QList<QString> auxList = set.toList();
-    qSort(auxList.begin(), auxList.end());
+	QSet<QString> set = sections.toSet();
+	QList<QString> auxList = set.toList();
+	qSort(auxList.begin(), auxList.end());
 
-    return auxList;
+	return auxList;
 }
 
-QHash<QString, QString> BrisaConfigurationManager::items(const QString &section) {
-    if (this->getDirectAccess())
-        this->update();
+QHash<QString, QString> BrisaConfigurationManager::items(const QString &section)
+{
+	if (this->getDirectAccess())
+		this->update();
 
-    QHash<QString, QString> items;
-    QList<QString> sections = this->state.keys();
+	QHash<QString, QString> items;
+	QList<QString> sections = this->state.keys();
 
-    for (int i = 0; i < sections.size(); ++i) {
-        if (sections[i].split(parameterSeparator).value(0) == section)
-            items[sections[i].split(parameterSeparator).at(1)]
-                    = this->state.value(sections[i]);
-    }
+	for (int i = 0; i < sections.size(); ++i) {
+		if (sections[i].split(parameterSeparator).value(0) == section)
+			items[sections[i].split(parameterSeparator).at(1)]
+				= this->state.value(sections[i]);
+	}
 
-    return items;
+	return items;
 }
 
-bool BrisaConfigurationManager::removeSection(const QString &section) {
-    QHash<QString, QString> items;
+bool BrisaConfigurationManager::removeSection(const QString &section)
+{
+	QHash<QString, QString> items;
 
-    QList<QString> sections = this->state.keys();
-    bool error = true;
-    for (int i = 0; i < sections.size(); ++i) {
-        if (sections[i].split(parameterSeparator).value(0) == section) {
-            this->state.remove(sections[i]);
-            error = false;
-        }
-    }
+	QList<QString> sections = this->state.keys();
+	bool error = true;
+	for (int i = 0; i < sections.size(); ++i) {
+		if (sections[i].split(parameterSeparator).value(0) == section) {
+			this->state.remove(sections[i]);
+			error = false;
+		}
+	}
 
-    if (this->getDirectAccess())
-        this->save();
+	if (this->getDirectAccess())
+		this->save();
 
-    return error;
+	return error;
 }
 
 bool BrisaConfigurationManager::setConfigFilePath(QString &path)
 {
-    QDir dir;
-    if (dir.exists(path)) {
-        this->configPath = path;
-        return true;
-    } else if (dir.mkpath(path)) {
-        qWarning() << "Path " << path << " does not exist. Creating path...";
-        this->configPath = path;
-        return true;
-    }
-    return false;
+	QDir dir;
+	if (dir.exists(path)) {
+		this->configPath = path;
+		return true;
+	} else if (dir.mkpath(path)) {
+		qWarning() << "Path " << path << " does not exist. Creating path...";
+		this->configPath = path;
+		return true;
+	}
+	return false;
 }
 
 QString BrisaConfigurationManager::getConfigFilePath()
 {
-    return this->configPath;
+	return this->configPath;
 }
 
 bool BrisaConfigurationManager::setGlobalConfigPath(QString &path)
 {
-    if (instance) {
-        qWarning() << "BrisaConfigurationManager was already instanciated. "
-                "Call setConfigFilePath to change the already existing instance configuration file path.";
-    }
-    QDir dir;
-    if (dir.exists(path)) {
-        globalConfigPath = path;
-        return true;
-    } else if (dir.mkpath(path)) {
-        qWarning() << "Path " << path << " does not exist. Creating path...";
-        globalConfigPath = path;
-        return true;
-    }
-    checkConfigFile = false;
-    return false;
+	if (instance) {
+		qWarning() << "BrisaConfigurationManager was already instanciated. "
+				   "Call setConfigFilePath to change the already existing instance configuration file path.";
+	}
+	QDir dir;
+	if (dir.exists(path)) {
+		globalConfigPath = path;
+		return true;
+	} else if (dir.mkpath(path)) {
+		qWarning() << "Path " << path << " does not exist. Creating path...";
+		globalConfigPath = path;
+		return true;
+	}
+	checkConfigFile = false;
+	return false;
 }
 
 BrisaConfigurationManager* BrisaConfigurationManager::getInstance()
 {
-    if (!instance) {
-        QString path;
-        if (checkConfigFile) {
-            if (QFile::exists(globalConfigPath + CONFIG_FILE_NAME)) {
-                path = globalConfigPath;
-            } else {
-                path = DEFAULT_CONFIG_PATH;
-            }
-        } else {
-            path = globalConfigPath;
-        }
-        instance = new BrisaConfigurationManager(path, QHash<QString, QString>());
-    }
-    return instance;
+	if (!instance) {
+		QString path;
+		if (checkConfigFile) {
+			if (QFile::exists(globalConfigPath + CONFIG_FILE_NAME)) {
+				path = globalConfigPath;
+			} else {
+				path = DEFAULT_CONFIG_PATH;
+			}
+		} else {
+			path = globalConfigPath;
+		}
+		instance = new BrisaConfigurationManager(path, QHash<QString, QString>());
+	}
+	return instance;
 }
 
 BrisaConfigurationManager* BrisaConfigurationManager::instance = NULL;

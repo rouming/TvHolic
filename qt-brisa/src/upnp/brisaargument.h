@@ -35,7 +35,8 @@
 #define BRISA_UPNP_EXPORT
 #endif
 
-namespace Brisa {
+namespace Brisa
+{
 
 /*!
  * \internal
@@ -44,54 +45,55 @@ namespace Brisa {
  *
  * \brief Represents the action's input and output arguments.
  */
-class BRISA_UPNP_EXPORT BrisaArgument {
+class BRISA_UPNP_EXPORT BrisaArgument
+{
 public:
 
-    /*!
-     * \internal
-     *
-     * Constructs an argument with given \a name, \a direction and
-     * \a relatedStateVariable.
-     */
-    BrisaArgument(const QString &name = "", const QString &direction = "",
-            const QString &relatedStateVariable = "");
+	/*!
+	 * \internal
+	 *
+	 * Constructs an argument with given \a name, \a direction and
+	 * \a relatedStateVariable.
+	 */
+	BrisaArgument(const QString &name = "", const QString &direction = "",
+				  const QString &relatedStateVariable = "");
 
-    /*!
-     * \internal
-     *
-     * Constructs an argument with an argument reference.
-     */
-    BrisaArgument(const BrisaArgument &brisaArgument);
+	/*!
+	 * \internal
+	 *
+	 * Constructs an argument with an argument reference.
+	 */
+	BrisaArgument(const BrisaArgument &brisaArgument);
 
-    typedef enum {
-        ArgumentName, Direction, RelatedStateVariable
-    } xmlArgument;
+	typedef enum {
+		ArgumentName, Direction, RelatedStateVariable
+	} xmlArgument;
 
-    /*!
-     * \internal
-     *
-     * Sets the argument's attribute \a key to the given \a value.
-     */
-    void setAttribute(xmlArgument key, const QString &value);
+	/*!
+	 * \internal
+	 *
+	 * Sets the argument's attribute \a key to the given \a value.
+	 */
+	void setAttribute(xmlArgument key, const QString &value);
 
-    /*!
-     * \internal
-     *
-     * Returns the value of the argument's attribute \a key.
-     */
-    QString getAttribute(xmlArgument key) const;
+	/*!
+	 * \internal
+	 *
+	 * Returns the value of the argument's attribute \a key.
+	 */
+	QString getAttribute(xmlArgument key) const;
 
-    /*!
-     * \internal
-     *
-     * Sets the argument's attributes to their default value.
-     */
-    void clear();
+	/*!
+	 * \internal
+	 *
+	 * Sets the argument's attributes to their default value.
+	 */
+	void clear();
 
 private:
-    QString name;
-    QString direction;
-    QString relatedStateVariable;
+	QString name;
+	QString direction;
+	QString relatedStateVariable;
 };
 
 }

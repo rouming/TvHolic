@@ -35,33 +35,34 @@
 
 #include <brisaabstracteventmessage.h>
 
-namespace Brisa {
+namespace Brisa
+{
 
 class BRISA_UPNP_EXPORT BrisaMulticastEventMessage : public BrisaAbstractEventMessage
 {
 public:
-    BrisaMulticastEventMessage(BrisaStateVariable *variable,
-                               QString LVL, QObject *parent = 0);
+	BrisaMulticastEventMessage(BrisaStateVariable *variable,
+							   QString LVL, QObject *parent = 0);
 
-    QHttpRequestHeader getMessageHeader() const;
+	QHttpRequestHeader getMessageHeader() const;
 
-    QByteArray getMessageBody() const;
+	QByteArray getMessageBody() const;
 
 private:
-    BrisaStateVariable *variable;
+	BrisaStateVariable *variable;
 
-    /*!
-     * \property SEQ
-     *
-     * \brief its event key
-     */
-    int SEQ;
+	/*!
+	 * \property SEQ
+	 *
+	 * \brief its event key
+	 */
+	int SEQ;
 
-    /*!
-     * \property LVL
-     * \brief event level
-     */
-    QString LVL;
+	/*!
+	 * \property LVL
+	 * \brief event level
+	 */
+	QString LVL;
 };
 
 }

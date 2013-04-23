@@ -3,8 +3,8 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    Widget window;
+	QApplication a(argc, argv);
+	Widget window;
 
-    return a.exec();
+	return a.exec();
 }

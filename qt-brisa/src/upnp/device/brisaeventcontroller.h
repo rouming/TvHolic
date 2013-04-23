@@ -37,43 +37,44 @@
 #include "brisawebservice.h"
 #include "brisawebserver.h"
 
-namespace Brisa {
-    class BRISA_UPNP_EXPORT BrisaEventController: public BrisaWebService
-    {
-    Q_OBJECT
+namespace Brisa
+{
+class BRISA_UPNP_EXPORT BrisaEventController: public BrisaWebService
+{
+	Q_OBJECT
 
-    public:
-        BrisaEventController(BrisaWebserver *sessionManager,
-       			QList<BrisaStateVariable *> *stateVariableList, QObject *parent = 0);
-        virtual ~BrisaEventController();
+public:
+	BrisaEventController(BrisaWebserver *sessionManager,
+						 QList<BrisaStateVariable *> *stateVariableList, QObject *parent = 0);
+	virtual ~BrisaEventController();
 
-    public slots:
-        void variableChanged(BrisaStateVariable *variable);
+public slots:
+	void variableChanged(BrisaStateVariable *variable);
 
-        void subscribe(const HttpRequest &request, BrisaWebserverSession *session);
+	void subscribe(const HttpRequest &request, BrisaWebserverSession *session);
 
-        void unsubscribe(const HttpRequest &request, BrisaWebserverSession *session);
+	void unsubscribe(const HttpRequest &request, BrisaWebserverSession *session);
 
-    protected:
-        void onRequest(const HttpRequest &, BrisaWebserverSession *session);
+protected:
+	void onRequest(const HttpRequest &, BrisaWebserverSession *session);
 
-    private:
-        BrisaEventController(const BrisaEventController &); // = delete;
+private:
+	BrisaEventController(const BrisaEventController &); // = delete;
 
-        void sendEvent(const BrisaEventMessage &message, const QUrl &url);
+	void sendEvent(const BrisaEventMessage &message, const QUrl &url);
 
-        void sendMulticastEvent(const BrisaMulticastEventMessage &message);
+	void sendMulticastEvent(const BrisaMulticastEventMessage &message);
 
-        QStringList getEventUrls(const QString &urls);
+	QStringList getEventUrls(const QString &urls);
 
-        int getTimeOut(const QString &timeout);
+	int getTimeOut(const QString &timeout);
 
-        QList<BrisaEventSubscription *> subscriptions;
+	QList<BrisaEventSubscription *> subscriptions;
 
-        QList<BrisaStateVariable *> *variableList;
+	QList<BrisaStateVariable *> *variableList;
 
-        QUdpSocket udpSocket;
-    };
+	QUdpSocket udpSocket;
+};
 }
 
 #endif /* _BRISAEVENTCONTROLLER_H */
