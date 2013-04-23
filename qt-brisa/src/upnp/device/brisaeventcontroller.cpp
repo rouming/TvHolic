@@ -76,7 +76,8 @@ inline void BrisaEventController::subscribe(const HttpRequest &request,
 
 		bool validSubscription = false;
 		foreach (BrisaEventSubscription *current, subscriptions) {
-			if (current->getSid() == headers.value("SID")) {
+			QString sid = "uuid:" + current->getSid();
+			if (sid == headers.value("SID")) {
 				current->renew(getTimeOut(headers.value("TIMEOUT")));
 
 				qDebug()
