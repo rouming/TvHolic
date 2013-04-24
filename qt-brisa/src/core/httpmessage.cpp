@@ -46,7 +46,7 @@ HttpMessage::HttpMessage(const HttpMessage &m) :
 HttpMessage::~HttpMessage()
 {
 	if (m_entityBody)
-		m_entityBody->deleteLater();
+		delete m_entityBody;
 }
 
 void HttpMessage::setHttpVersion(const HttpVersion &version)
@@ -69,7 +69,7 @@ void HttpMessage::setHeader(const QByteArray &name, const QByteArray &value)
 void HttpMessage::setEntityBody(const QByteArray &body)
 {
 	if (m_entityBody && !dynamic_cast<QBuffer *>(m_entityBody)) {
-		m_entityBody->deleteLater();
+		delete m_entityBody;
 		m_entityBody = NULL;
 	}
 
@@ -89,7 +89,7 @@ bool HttpMessage::setEntityBody(QIODevice *bodyDevice)
 		return false;
 
 	if (m_entityBody)
-		m_entityBody->deleteLater();
+		delete m_entityBody;
 
 	m_entityBody = bodyDevice;
 	m_entityBody->setParent(NULL);
