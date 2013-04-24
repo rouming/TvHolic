@@ -48,12 +48,16 @@ enum DumpDir {
 	DUMP_IN  = 1
 };
 
-void dump(const QByteArray& ba, DumpDir dir)
+void dump(const QByteArray& ba, QTcpSocket* sock, DumpDir dir)
 {
 	if (dir == DUMP_OUT)
-		qDebug("<<<<<<<<<<<<<< OUT <<<<<<<<<<<<<<<<<");
+		qDebug("<<<<<<<<<<<<<< OUT (%s:%u) <<<<<<<<<<<<<<<<<",
+			   qPrintable(sock->peerAddress().toString()),
+			   sock->peerPort());
 	else
-		qDebug(">>>>>>>>>>>>>>  IN  >>>>>>>>>>>>>>>>");
+		qDebug(">>>>>>>>>>>>>>  IN (%s:%u) >>>>>>>>>>>>>>>>",
+			   qPrintable(sock->peerAddress().toString()),
+			   sock->peerPort());
 	qDebug("%s", ba.constData());
 }
 
@@ -114,7 +118,7 @@ void HttpSession::writeResponse(HttpResponse r)
 	ba.append("\r\n");
 
 #ifdef DUMP_NETWORK
-	dump(ba, DUMP_OUT);
+	dump(ba, socket, DUMP_OUT);
 #endif
 
 	socket->write(ba);
@@ -144,7 +148,7 @@ void HttpSession::onReadyRead()
 {
 	QByteArray ba = socket->readAll();
 #ifdef DUMP_NETWORK
-	dump(ba, DUMP_IN);
+	dump(ba, socket, DUMP_IN);
 #endif
 	buffer.append(ba);
 
