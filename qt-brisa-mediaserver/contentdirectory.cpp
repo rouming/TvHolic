@@ -162,7 +162,7 @@ void ContentDirectory::addAudioFile(QString file, QString parentId)
 void ContentDirectory::addVideoFile(QString file, QString parentId)
 {
 	QStringList parentPath = parentId.split("/");
-	Container *parent = getContainerById(parentPath.last(), audioRoot);
+	Container *parent = getContainerById(parentPath.last(), videoRoot);
 	if (!parent) {
 		parent = this->createContainer(file.section("/", 0, parentPath.size() - 1), this->videoRoot);
 	}
