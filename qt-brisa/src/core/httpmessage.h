@@ -45,6 +45,7 @@ public:
 	void setHttpVersion(const HttpVersion &version);
 
 	QByteArray header(const QByteArray &name) const;
+	bool headerExists(const QByteArray &name) const;
 	/*
 	  if value is null, the header is removed (if exists)
 	  */
@@ -95,6 +96,13 @@ inline Brisa::HttpVersion Brisa::HttpMessage::httpVersion() const
 inline QByteArray Brisa::HttpMessage::header(const QByteArray &name) const
 {
 	return m_headers.value(name.toUpper());
+}
+
+inline bool Brisa::HttpMessage::headerExists(const QByteArray &name) const
+{
+	if (name.isEmpty())
+		return false;
+	return m_headers.contains(name.toUpper());
 }
 
 inline QHash<QByteArray, QByteArray> Brisa::HttpMessage::headers() const

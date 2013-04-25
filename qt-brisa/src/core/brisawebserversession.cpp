@@ -249,7 +249,8 @@ void BrisaWebserverSession::prepareResponse(HttpResponse &r)
 
 	QPair<qlonglong, qlonglong> range = r.range();
 
-	r.setHeader("CONTENT-TYPE", "text/xml; charset=\"utf-8\"");
+	if (!r.headerExists("CONTENT-TYPE"))
+		r.setHeader("CONTENT-TYPE", "text/plain");
 
 	if (useChunkedResponse) {
 		r.setHeader("TRANSFER-ENCODING", "chunked");
