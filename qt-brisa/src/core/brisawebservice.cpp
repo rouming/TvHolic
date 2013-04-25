@@ -25,8 +25,6 @@
 
 #include "brisawebservice.h"
 
-#define DEFAULT_PAGE "<html><body><h1>BRisa WebServer!</h1></body></html>\n"
-
 using namespace Brisa;
 
 BrisaWebService::BrisaWebService(QObject *parent) :
@@ -47,4 +45,3 @@ void BrisaWebService::onRequest(const HttpRequest &request, BrisaWebserverSessio
 {
 	emit genericRequestReceived(request, session);
 }
-
