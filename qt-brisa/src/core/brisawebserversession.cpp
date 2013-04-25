@@ -47,8 +47,10 @@ enum State {
 	WAITING_FOR_TRAILLING_HEADERS
 };
 
-BrisaWebserverSession::BrisaWebserverSession(BrisaWebserver *server, HttpSessionManager *parent) :
-	HttpSession(parent),
+BrisaWebserverSession::BrisaWebserverSession(BrisaWebserver *server,
+											 HttpSessionManager *manager,
+											 QObject *parent) :
+	HttpSession(manager, parent),
 	server(server),
 	timer(new QTimer)
 {

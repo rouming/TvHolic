@@ -31,11 +31,10 @@
 using namespace Brisa;
 
 HttpSessionManager::HttpSessionManager(HttpServer *parent) :
-	QThread(),
+	QThread(parent),
 	server(parent),
 	connector(NULL)
 {
-	moveToThread(this);
 }
 
 void HttpSessionManager::waitForEventLoopStart()
@@ -70,11 +69,13 @@ void HttpSessionManager::run()
 	// ...
 
 	locker.relock();
-	delete connector;
+	Connector* oldConnector = connector;
 	connector = NULL;
 	locker.unlock();
 
-	// We may have something pended
+	oldConnector->deleteLater();
+
+	// Process deferred deletes and other pended events
 	while (eventLoop.processEvents())
 		;
 }
@@ -108,7 +109,7 @@ void HttpSessionManager::newConnection(int socketDescriptor)
 		pool.back()->setSession(socketDescriptor);
 		pool.pop_back();
 	} else {
-		HttpSession *s = server->factory().generateSessionHandler(this);
+		HttpSession *s = server->factory().generateSessionHandler(this, connector);
 		s->setSession(socketDescriptor);
 	}
 }

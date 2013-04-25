@@ -42,7 +42,7 @@ class BRISA_CORE_EXPORT HttpSession: public QObject
 {
 	Q_OBJECT
 public:
-	explicit HttpSession(HttpSessionManager *sessionManager);
+	explicit HttpSession(HttpSessionManager *sessionManager, QObject *parent);
 	virtual ~HttpSession();
 
 	void setSession(int socketDescriptor);

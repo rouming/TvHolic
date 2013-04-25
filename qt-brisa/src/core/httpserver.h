@@ -41,7 +41,8 @@ class HttpSessionManager;
 class HttpServerFactory
 {
 public:
-	virtual HttpSession *generateSessionHandler(HttpSessionManager *parent) = 0;
+	virtual HttpSession *generateSessionHandler(HttpSessionManager *manager,
+												QObject *parent) = 0;
 };
 
 class BRISA_CORE_EXPORT HttpServer : public QTcpServer

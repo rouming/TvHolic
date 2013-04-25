@@ -61,7 +61,8 @@ void dump(const QByteArray& ba, QTcpSocket* sock, DumpDir dir)
 	qDebug("%s", ba.constData());
 }
 
-HttpSession::HttpSession(HttpSessionManager *sessionManager) :
+HttpSession::HttpSession(HttpSessionManager *sessionManager, QObject *parent) :
+	QObject(parent),
 	lastSupportedHttpVersion(1, 1),
 	sessionManager(sessionManager),
 	socket(new QTcpSocket()),

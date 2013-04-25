@@ -66,7 +66,8 @@ private:
 	{
 	public:
 		Factory(BrisaWebserver *server) : server(server) {}
-		HttpSession *generateSessionHandler(HttpSessionManager *parent);
+		HttpSession *generateSessionHandler(HttpSessionManager *manager,
+											QObject *parent);
 
 	private:
 		BrisaWebserver *server;

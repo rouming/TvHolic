@@ -61,7 +61,7 @@ protected:
 private:
 	BrisaEventController(const BrisaEventController &); // = delete;
 
-	void sendEvent(const BrisaEventMessage &message, const QUrl &url);
+	void sendEvent(const BrisaEventMessage &message, const QUrl &url, QObject *parent);
 
 	void sendMulticastEvent(const BrisaMulticastEventMessage &message);
 

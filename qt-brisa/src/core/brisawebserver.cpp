@@ -46,9 +46,6 @@ BrisaWebserver::BrisaWebserver(const QHostAddress &host, quint16 port) :
 
 BrisaWebserver::~BrisaWebserver()
 {
-//    foreach (BrisaWebserverSession *session, listeners) {
-//        session->deleteLater();
-//    }
 }
 
 void BrisaWebserver::addService(QByteArray path, BrisaWebService *service)
@@ -103,7 +100,8 @@ HttpServerFactory &BrisaWebserver::factory()
 	return m_factory;
 }
 
-HttpSession *BrisaWebserver::Factory::generateSessionHandler(HttpSessionManager *parent)
+HttpSession *BrisaWebserver::Factory::generateSessionHandler(HttpSessionManager *manager,
+															 QObject *parent)
 {
-	return new BrisaWebserverSession(server, parent);
+	return new BrisaWebserverSession(server, manager, parent);
 }

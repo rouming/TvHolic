@@ -115,7 +115,7 @@ inline void BrisaEventController::subscribe(const HttpRequest &request,
 
 		BrisaEventMessage *message = new BrisaEventMessage(*newSubscriber,
 				this->variableList);
-		sendEvent(*message, newSubscriber->getUrl());
+		sendEvent(*message, newSubscriber->getUrl(), session);
 		delete message;
 
 		return;
@@ -171,9 +171,10 @@ inline void BrisaEventController::unsubscribe(const HttpRequest &request,
 	}
 }
 
-void BrisaEventController::sendEvent(const BrisaEventMessage &message, const QUrl &url)
+void BrisaEventController::sendEvent(const BrisaEventMessage &message,
+									 const QUrl &url, QObject *parent)
 {
-	QTcpSocket *socket = new QTcpSocket;
+	QTcpSocket *socket = new QTcpSocket(parent);
 
 	socket->connectToHost(url.host(), url.port());
 
@@ -213,7 +214,7 @@ void BrisaEventController::variableChanged(BrisaStateVariable *variable)
 		}
 		qDebug() << "Sending unicast message...";
 		BrisaEventMessage message(*(*i), &variables);
-		this->sendEvent(message, (*i)->getUrl());
+		this->sendEvent(message, (*i)->getUrl(), this);
 	}
 
 }

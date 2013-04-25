@@ -43,7 +43,8 @@ class BRISA_CORE_EXPORT BrisaWebserverSession : public HttpSession
 {
 	Q_OBJECT
 public:
-	BrisaWebserverSession(BrisaWebserver *server, HttpSessionManager *parent);
+	BrisaWebserverSession(BrisaWebserver *server, HttpSessionManager *manager,
+						  QObject *parent);
 	~BrisaWebserverSession();
 
 	int isRequestSupported(const HttpRequest &request) const;
