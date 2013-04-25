@@ -29,7 +29,7 @@
 #include <QtDebug>
 #include <QIODevice>
 
-#include "brisawebfile.h"
+#include "brisawebstaticcontent.h"
 
 // TODO: put this include at the begin of the file
 #include "brisadevice.h"
@@ -176,7 +176,7 @@ BrisaDevice::~BrisaDevice()
 void BrisaDevice::xmlGenerator()
 {
 	BrisaDeviceXMLHandler handler;
-	handler.xmlGenerator(this, &descriptionFile);
+	handler.xmlGenerator(this, &descriptionData);
 }
 
 void BrisaDevice::setAttribute(xmlTags key, const QString &v)
@@ -427,10 +427,10 @@ void BrisaDevice::startWebServer()
 
 void BrisaDevice::buildWebServerTree()
 {
-	descriptionFile.open();
-	webserver->addService(fileAddress.toUtf8(),
-						  new BrisaWebFile(descriptionFile.fileName(), this));
-	descriptionFile.close();
+	BrisaWebStaticContent *descService =
+		new BrisaWebStaticContent(descriptionData.buffer(), this);
+	descService->setContentType("text/xml; charset=\"utf-8\"");
+	webserver->addService(fileAddress.toUtf8(), descService);
 
 	foreach(BrisaService *service, serviceList) {
 		service->buildWebServiceTree(webserver);

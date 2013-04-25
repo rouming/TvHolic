@@ -31,7 +31,7 @@
 
 #include <QXmlStreamWriter>
 #include <QString>
-#include <QFile>
+#include <QIODevice>
 #include <QtDebug>
 
 #include "brisaglobal.h"
@@ -44,7 +44,7 @@ class BrisaDevice;
 class BRISA_UPNP_EXPORT BrisaDeviceXMLHandler
 {
 public:
-	void xmlGenerator(BrisaDevice *device, QFile *file);
+	void xmlGenerator(BrisaDevice *device, QIODevice *ioDev);
 
 private:
 	void writeDevice(BrisaDevice *device);

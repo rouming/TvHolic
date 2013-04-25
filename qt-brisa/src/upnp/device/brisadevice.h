@@ -330,7 +330,7 @@ private:
 	QString attribute;
 	QString fileAddress;
 
-	QTemporaryFile descriptionFile;
+	QBuffer descriptionData;
 
 	BrisaSSDPServer *ssdp;
 	BrisaWebserver *webserver;

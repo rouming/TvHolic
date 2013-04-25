@@ -32,11 +32,11 @@
 
 using namespace Brisa;
 
-void BrisaDeviceXMLHandler::xmlGenerator(BrisaDevice *device, QFile *file)
+void BrisaDeviceXMLHandler::xmlGenerator(BrisaDevice *device, QIODevice *ioDev)
 {
-	file->open(QIODevice::ReadWrite | QIODevice::Text);
+	ioDev->open(QIODevice::ReadWrite | QIODevice::Text);
 
-	this->writer = new QXmlStreamWriter(file);
+	this->writer = new QXmlStreamWriter(ioDev);
 	this->writer->setAutoFormatting(true);
 
 	this->writer->writeStartDocument();
@@ -58,7 +58,7 @@ void BrisaDeviceXMLHandler::xmlGenerator(BrisaDevice *device, QFile *file)
 
 	this->writer->writeEndDocument();
 
-	file->close();
+	ioDev->close();
 	delete this->writer;
 }
 
