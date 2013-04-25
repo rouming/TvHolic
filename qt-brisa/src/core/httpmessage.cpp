@@ -49,6 +49,18 @@ HttpMessage::~HttpMessage()
 		delete m_entityBody;
 }
 
+HttpMessage& HttpMessage::operator=(const HttpMessage &m)
+{
+	m_httpVersion = m.m_httpVersion;
+	m_headers = m.m_headers;
+	m_entityBody = m.m_entityBody;
+	m_range = m.m_range;
+
+	m.m_entityBody = NULL;
+
+	return *this;
+}
+
 void HttpMessage::setHttpVersion(const HttpVersion &version)
 {
 	m_httpVersion = version;

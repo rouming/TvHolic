@@ -224,8 +224,8 @@ void BrisaWebserverSession::onRequest(const HttpRequest &request)
 		return;
 	}
 	if (BrisaWebService *service = server->service(request.uri())) {
-		lastRequest = request;
 		service->postRequest(request, this);
+		lastRequest = request;
 	} else if (request.method() == "NOTIFY") {
 		if (BrisaWebService *service = server->service("/")) {
 			qDebug() << request.entityBody();

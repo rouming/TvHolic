@@ -41,6 +41,8 @@ public:
 	HttpMessage(const HttpMessage &);
 	~HttpMessage();
 
+	HttpMessage& operator=(const HttpMessage&);
+
 	HttpVersion httpVersion() const;
 	void setHttpVersion(const HttpVersion &version);
 
