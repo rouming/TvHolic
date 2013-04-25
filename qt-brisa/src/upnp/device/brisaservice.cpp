@@ -206,8 +206,9 @@ void BrisaService::buildWebServiceTree(BrisaWebserver *sessionManager)
 
 	sessionManager->addService((serviceId + '/' + eventSubUrl.section('/', -1)).toUtf8(), event);
 
-	sessionManager->addService((serviceId + '/' + scpdUrl.section('/', -1)).toUtf8(),
-							   new BrisaWebFile(scpdFilePath, this));
+	BrisaWebFile* webFile = new BrisaWebFile(scpdFilePath, this);
+	webFile->setContentType("text/xml; charset=\"utf-8\"");
+	sessionManager->addService((serviceId + '/' + scpdUrl.section('/', -1)).toUtf8(), webFile);
 
 	childWebServices.insert(controlUrl.section('/', -1), control);
 	childWebServices.insert(eventSubUrl.section('/', -1), event);
