@@ -33,7 +33,8 @@ using namespace Brisa;
 HttpServer::HttpServer(const QHostAddress &address, quint16 port, QObject *parent) :
 	QTcpServer(parent),
 	address(address),
-	port(port)
+	port(port),
+	ringIndex(0)
 {
 	threads.append(new HttpSessionManager(this));
 }
