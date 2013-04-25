@@ -415,6 +415,7 @@ void BrisaDevice::stop()
 
 	doByeBye();
 	ssdp->stop();
+	webserver->stop();
 	running = false;
 }
 

@@ -54,6 +54,7 @@ public:
 	virtual ~HttpServer();
 
 	void start();
+	void stop();
 
 	int threadsNumber() const;
 	// must be more than 0

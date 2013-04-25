@@ -64,11 +64,7 @@ void HttpServer::setThreadsNumber(int number)
 
 HttpServer::~HttpServer()
 {
-	foreach(HttpSessionManager *thread, threads) {
-		thread->quit();
-		thread->wait();
-		delete thread;
-	}
+	stop();
 }
 
 void HttpServer::incomingConnection(int socketDescriptor)
@@ -87,4 +83,14 @@ void HttpServer::start()
 		}
 		thread->waitForEventLoopStart();
 	}
+}
+
+void HttpServer::stop()
+{
+	foreach(HttpSessionManager *thread, threads) {
+		thread->quit();
+		thread->wait();
+		delete thread;
+	}
+	threads.clear();
 }
