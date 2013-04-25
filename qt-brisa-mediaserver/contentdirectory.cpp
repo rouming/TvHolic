@@ -73,21 +73,34 @@ BrisaOutArgument* ContentDirectory::getsystemupdateid(BrisaInArgument *const inA
 
 BrisaOutArgument* ContentDirectory::browse(BrisaInArgument *const inArguments, BrisaAction *const action)
 {
-	(void)inArguments;
 	(void)action;
 
-	qDebug("@@@@ browse");
-
 	BrisaOutArgument *outArgs = new BrisaOutArgument();
+	QString id = inArguments->value(OBJECT_ID);
+	qDebug() << "Browsing " << id;
+	Container *video = this->getContainerById(id, videoRoot);
+	QString result = "";
+	int numberReturned = 0;
+	int totalMatches = 0;
+	if (video) {
+		qDebug() << video->getId();
+		result += video->toString();
+		numberReturned += video->getChildCount();
+		totalMatches += video->getChildCount();
+	}
+	qDebug() << "Result:\n" << result;
+	outArgs->insert(RESULT, result);
+	outArgs->insert(NUMBER_RETURNED, QByteArray::number(numberReturned));
+	outArgs->insert(TOTAL_MATCHES, QByteArray::number(totalMatches));
+	outArgs->insert(UPDATE_ID,
+					getVariable("SystemUpdateID")->getAttribute(BrisaStateVariable::Value));
+
 	return outArgs;
 }
 
 BrisaOutArgument* ContentDirectory::search(BrisaInArgument *const inArguments, BrisaAction *const action)
 {
-	(void)inArguments;
 	(void)action;
-
-	qDebug("@@@@ search");
 
 	BrisaOutArgument *outArgs = new BrisaOutArgument();
 	QString id = inArguments->value(CONTAINER_ID);
