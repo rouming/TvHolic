@@ -225,7 +225,6 @@ void BrisaWebserverSession::onRequest(const HttpRequest &request)
 	}
 	if (BrisaWebService *service = server->service(request.uri())) {
 		service->postRequest(request, this);
-		lastRequest = request;
 	} else if (request.method() == "NOTIFY") {
 		if (BrisaWebService *service = server->service("/")) {
 			qDebug() << request.entityBody();
@@ -242,9 +241,9 @@ void BrisaWebserverSession::onRequest(const HttpRequest &request)
 	}
 }
 
-void BrisaWebserverSession::prepareResponse(HttpResponse &r)
+void BrisaWebserverSession::prepareResponse(const HttpRequest &req, HttpResponse &r)
 {
-	if (lastRequest.httpVersion().minor() == 0 || lastRequest.header("CONNECTION") == "close")
+	if (req.httpVersion().minor() == 0 || req.header("CONNECTION") == "close")
 		r.setCloseConnection(true);
 
 	QPair<qlonglong, qlonglong> range = r.range();

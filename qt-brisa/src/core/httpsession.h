@@ -70,7 +70,7 @@ protected:
 	virtual bool atEnd(HttpRequest &request, QByteArray &buffer) throw(HttpResponse) = 0;
 	virtual void onRequest(const HttpRequest &request) = 0;
 
-	virtual void prepareResponse(HttpResponse &);
+	virtual void prepareResponse(const HttpRequest &, HttpResponse &);
 	virtual void writeEntityBody(const HttpResponse &, QTcpSocket *);
 
 	virtual void sessionStarted() {

@@ -62,7 +62,7 @@ protected:
 	bool atEnd(HttpRequest &request, QByteArray &buffer) throw(HttpResponse);
 	void onRequest(const HttpRequest &request);
 
-	void prepareResponse(HttpResponse &);
+	void prepareResponse(const HttpRequest &, HttpResponse &);
 	void writeEntityBody(const HttpResponse &, QTcpSocket *);
 
 	void sessionStarted();
@@ -75,7 +75,6 @@ private:
 
 	int chunkedEntity;
 	QByteArray chunksBuffer;
-	HttpRequest lastRequest;
 
 	bool useChunkedResponse;
 };

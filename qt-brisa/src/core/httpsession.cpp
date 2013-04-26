@@ -95,7 +95,7 @@ int HttpSession::isRequestSupported(const HttpRequest &request) const
 void HttpSession::writeResponse(HttpResponse r)
 {
 	QByteArray ba;
-	prepareResponse(r);
+	prepareResponse(requestInfo, r);
 
 	ba.append(r.httpVersion().operator QByteArray());
 	ba.append(" ");
@@ -130,7 +130,7 @@ void HttpSession::writeResponse(HttpResponse r)
 		socket->close();
 }
 
-void HttpSession::prepareResponse(HttpResponse &r)
+void HttpSession::prepareResponse(const HttpRequest &, HttpResponse &r)
 {
 	r.setHeader("CONTENT-LENGTH", QByteArray::number(r.entitySize()));
 }
