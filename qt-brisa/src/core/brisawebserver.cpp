@@ -58,12 +58,15 @@ static QRegExp toRegExp(const QByteArray& path)
 	return QRegExp(QRegExp::escape(str));
 }
 
-void BrisaWebserver::addService(QByteArray path, BrisaWebService *service)
+void BrisaWebserver::addService(const QByteArray &path, BrisaWebService *service)
 {
-	if (!service || path.isEmpty())
-		return;
+	addService(toRegExp(path), service);
+}
 
-	QRegExp rx = toRegExp(path);
+void BrisaWebserver::addService(const QRegExp &rx, BrisaWebService *service)
+{
+	if (!service || rx.isEmpty())
+		return;
 
 	mutex.lock();
 
@@ -74,12 +77,15 @@ void BrisaWebserver::addService(QByteArray path, BrisaWebService *service)
 	qDebug() << "Adding Service: " << rx.pattern();
 }
 
-void BrisaWebserver::removeService(QByteArray path)
+void BrisaWebserver::removeService(const QByteArray &path)
 {
-	if (path.isEmpty())
-		return;
+	removeService(toRegExp(path));
+}
 
-	QRegExp rx = toRegExp(path);
+void BrisaWebserver::removeService(const QRegExp &rx)
+{
+	if (rx.isEmpty())
+		return;
 
 	mutex.lock();
 
@@ -102,6 +108,7 @@ BrisaWebService *BrisaWebserver::service(QByteArray path) const
 
 	if (path.isEmpty())
 		return NULL;
+
 	if (!path.startsWith('/'))
 		path.prepend('/');
 

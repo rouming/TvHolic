@@ -57,8 +57,12 @@ public:
 	BrisaWebserver(const QHostAddress &host, quint16 port);
 	~BrisaWebserver();
 
-	void addService(QByteArray path, BrisaWebService *service);
-	void removeService(QByteArray path);
+	void addService(const QByteArray & path, BrisaWebService *service);
+	void removeService(const QByteArray &path);
+
+	void addService(const QRegExp &rx, BrisaWebService *service);
+	void removeService(const QRegExp& rx);
+
 	BrisaWebService *service(QByteArray path) const;
 
 protected:
