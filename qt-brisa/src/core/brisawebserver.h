@@ -32,6 +32,9 @@
 #define _BRISAWEBSERVER_H
 #include <QtCore>
 #include <QtNetwork>
+#include <QRegExp>
+#include <QPair>
+#include <QList>
 #include "brisaglobal.h"
 
 #include "httpserver.h"
@@ -75,7 +78,8 @@ private:
 
 	// QHash and QList are reentrant, not thread-safe
 	mutable QMutex mutex;
-	QHash<QByteArray, BrisaWebService *> services;
+	typedef QPair<QRegExp, BrisaWebService *> Pair;
+	QList<Pair> services;
 };
 
 }

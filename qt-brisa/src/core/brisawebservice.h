@@ -51,14 +51,6 @@ signals:
 
 protected:
 	virtual void onRequest(const HttpRequest &request, BrisaWebserverSession *session);
-	QByteArray path() {
-		return m_path;
-	}
-
-private:
-	QByteArray m_path;
-
-	friend class BrisaWebserver;
 };
 
 }

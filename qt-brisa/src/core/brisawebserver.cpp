@@ -48,34 +48,49 @@ BrisaWebserver::~BrisaWebserver()
 {
 }
 
+static QRegExp toRegExp(const QByteArray& path)
+{
+	QString str(path);
+
+	if (!str.startsWith('/'))
+		str.prepend('/');
+
+	return QRegExp(QRegExp::escape(str));
+}
+
 void BrisaWebserver::addService(QByteArray path, BrisaWebService *service)
 {
 	if (!service || path.isEmpty())
 		return;
 
+	QRegExp rx = toRegExp(path);
+
 	mutex.lock();
 
-	if (!path.startsWith('/'))
-		path.prepend('/');
-
-	services[path] = service;
-	service->m_path = path;
-
-	qDebug() << "Adding Service: " << path;
+	services.append(qMakePair(rx, service));
 
 	mutex.unlock();
+
+	qDebug() << "Adding Service: " << rx.pattern();
 }
 
 void BrisaWebserver::removeService(QByteArray path)
 {
-	if (!path.startsWith('/'))
-		path.prepend('/');
+	if (path.isEmpty())
+		return;
+
+	QRegExp rx = toRegExp(path);
 
 	mutex.lock();
 
-	if (services.contains(path)) {
-		services[path]->m_path.clear();
-		services.remove(path);
+	for (QList<Pair>::Iterator it = services.begin();
+		 it != services.end();
+		 ++it) {
+		Pair& pair = *it;
+		if (pair.first == rx) {
+			services.erase(it);
+			break;
+		}
 	}
 
 	mutex.unlock();
@@ -83,16 +98,28 @@ void BrisaWebserver::removeService(QByteArray path)
 
 BrisaWebService *BrisaWebserver::service(QByteArray path) const
 {
+	BrisaWebService *serv = NULL;
+
 	if (path.isEmpty())
 		return NULL;
-
 	if (!path.startsWith('/'))
 		path.prepend('/');
 
 	mutex.lock();
-	BrisaWebService *service = services.value(path);
+
+	for (QList<Pair>::ConstIterator it = services.begin();
+		 it != services.end();
+		 ++it) {
+		const Pair& pair = *it;
+		if (pair.first.exactMatch(QString(path))) {
+			serv = pair.second;
+			break;
+		}
+	}
+
 	mutex.unlock();
-	return service;
+
+	return serv;
 }
 
 HttpServerFactory &BrisaWebserver::factory()
