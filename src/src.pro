@@ -8,30 +8,50 @@ LEVEL = ..
 
 TEMPLATE = app
 
+include($$PWD/../qt-brisa/brisa.pri)
+
 HEADERS += \
            TvHolic.h \
            Config.h \
            Global.h \
            Encoder.h \
-           HttpSession.h \
-           TcpServer.h \
-           ThreadPool.h \
-           UpnpServer.h \
            PipeProcess.h \
            MencoderTranscoder.h \
            AsIsTranscoder.h \
+           ConnectionManagerService.h \
+           ContentDirectoryService.h \
+           \
+           DIDL/didlobject.h \
+           DIDL/resource.h \
+           DIDL/searchclass.h \
+           DIDL/container.h \
+           DIDL/item.h \
+           DIDL/videoitem.h \
+           DIDL/createclass.h \
+           DIDL/audioitem.h \
+           DIDL/genre.h
+
 
 SOURCES += \
            TvHolic.cpp \
            Config.cpp \
            Global.cpp \
            Encoder.cpp \
-           HttpSession.cpp \
-           TcpServer.cpp \
-           ThreadPool.cpp \
-           UpnpServer.cpp \
            PipeProcess.cpp \
            MencoderTranscoder.cpp \
            AsIsTranscoder.cpp \
+           ConnectionManagerService.cpp \
+           ContentDirectoryService.cpp \
+           \
+           DIDL/didlobject.cpp \
+           DIDL/resource.cpp \
+           DIDL/searchclass.cpp \
+           DIDL/container.cpp \
+           DIDL/item.cpp \
+           DIDL/videoitem.cpp \
+           DIDL/createclass.cpp \
+           DIDL/audioitem.cpp \
+           DIDL/genre.cpp
+
 
 RESOURCES += $$LEVEL/TvHolic.qrc

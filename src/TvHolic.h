@@ -1,22 +1,21 @@
 #ifndef __TVHOLIC_H__
 #define __TVHOLIC_H__
 
-#include "TcpServer.h"
-#include "UpnpServer.h"
+#include "brisadevice.h"
 
-class TvHolic : public QObject
+#include "ConnectionManagerService.h"
+#include "ContentDirectoryService.h"
+
+class TvHolic : public Brisa::BrisaDevice
 {
 	Q_OBJECT
 public:
 	TvHolic();
 	~TvHolic();
 
-	bool init();
-	void stop();
-
 private:
-	TcpServer m_tcpServer;
-	UpnpServer m_upnpServer;
+	ContentDirectoryService* m_contDirService;
+	ConnectionManagerService* m_connMngService;
 };
 
 #endif //__TVHOLIC_H__
