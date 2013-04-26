@@ -212,6 +212,11 @@ public:
 	BrisaService *getServiceByType(const QString &serviceType);
 
 	/*!
+	 * Getter for BrisaWebserver
+	 */
+	BrisaWebserver *getWebserver() const;
+
+	/*!
 	 *  Clears the device information, including services, icons and embedded devices.
 	 */
 	void clear();
@@ -244,9 +249,6 @@ public:
 
 	int threadsNumber() const;
 	void setThreadsNumber(int);
-
-	QByteArray addWebservice(QByteArray pathSuffix, BrisaWebService *service);
-	void removeWebservice(const QByteArray &path);
 
 public slots:
 	/*!

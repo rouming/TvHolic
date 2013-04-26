@@ -29,11 +29,14 @@ void BrisaMediaServer::addAudioFile(QString file)
 
 	QString parentId = file.section("/", 0, file.count("/") - 1);
 	this->contentDirectoryService->addAudioFile(file, parentId);
-	qDebug() << this->getAttribute(BrisaDevice::UrlBase) + this->addWebservice(file.toUtf8(), new BrisaWebFile(file));
+	this->getWebserver()->addService(file.toUtf8(), new BrisaWebFile(file));
+	qDebug() << this->getAttribute(BrisaDevice::UrlBase);
 }
 
 void BrisaMediaServer::addVideoFile(QString file)
 {
 	QString parentId = file.section("/", 0, file.count("/") - 1);
 	this->contentDirectoryService->addVideoFile(file, parentId);
+	this->getWebserver()->addService(file.toUtf8(), new BrisaWebFile(file));
+	qDebug() << this->getAttribute(BrisaDevice::UrlBase);
 }

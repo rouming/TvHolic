@@ -38,8 +38,6 @@
 
 using namespace Brisa;
 
-static const QByteArray customWebservicesPath = "/custom/";
-
 BrisaDevice::BrisaDevice(QObject *parent) :
 	QObject(parent), running(false)
 {
@@ -382,6 +380,11 @@ BrisaService *BrisaDevice::getServiceByType(const QString &serviceType)
 	return 0;
 }
 
+BrisaWebserver *BrisaDevice::getWebserver() const
+{
+	return webserver;
+}
+
 void BrisaDevice::start()
 {
 	if (isRunning()) {
@@ -663,21 +666,4 @@ void BrisaDevice::discoverNetworkAddress()
 
 	qDebug() << "Brisa Device: Acquired Address " << this->ipAddress + ":" +
 			 QString::number(this->port);
-}
-
-QByteArray BrisaDevice::addWebservice(QByteArray pathSuffix,
-									  BrisaWebService *service)
-{
-	if (pathSuffix.startsWith('/'))
-		pathSuffix.remove(0, 1);
-	QByteArray path = customWebservicesPath + pathSuffix;
-	webserver->addService(path, service);
-	return path;
-}
-
-void BrisaDevice::removeWebservice(const QByteArray &path)
-{
-	if (path.startsWith(customWebservicesPath)) {
-		webserver->removeService(path);
-	}
 }
