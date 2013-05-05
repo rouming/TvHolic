@@ -56,6 +56,7 @@ HttpResponse BrisaEventSubscription::getAcceptSubscriptionResponse() const
 
 	response.setHeader("TIMEOUT", (timeout >= 0) ? QByteArray("Second-")
 					   + QByteArray::number(timeout) : "infinite");
+	response.setHeader("CONTENT-TYPE", "text/xml; charset=\"utf-8\"");
 
 	return response;
 }

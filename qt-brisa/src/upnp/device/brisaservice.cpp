@@ -281,6 +281,7 @@ inline void BrisaService::respondAction(BrisaWebserverSession *session, const Br
 	// TODO: if the connection should br closed, set the flag in the HttpResponse constructor
 	HttpResponse r(HttpVersion(1, 1), HttpResponse::OK);
 	r.setHeader("CONTENT-LENGTH", QByteArray::number(message.size()));
+	r.setHeader("CONTENT-TYPE", "text/xml; charset=\"utf-8\"");
 	r.setEntityBody(message);
 	session->respond(r);
 }
@@ -296,6 +297,7 @@ inline void BrisaService::respondError(BrisaWebserverSession *session, int error
 	// TODO: if the connection should br closed, set the flag in the HttpResponse constructor
 	HttpResponse r(HttpVersion(1, 1), HttpResponse::OK);
 	r.setHeader("CONTENT-LENGTH", QByteArray::number(message.size()));
+	r.setHeader("CONTENT-TYPE", "text/xml; charset=\"utf-8\"");
 	r.setEntityBody(message.toUtf8());
 	session->respond(r);
 }
