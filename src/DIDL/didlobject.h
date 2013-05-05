@@ -23,8 +23,8 @@ public:
 
 	~DidlObject();
 	void addResource(Resource *resource);
-	QString toString();
-	QDomElement toDidlElement();
+	QString toString(QDomDocument&);
+	QDomElement toDidlElement(QDomDocument&);
 	inline QString getElementName() {
 		return elementName;
 	}
@@ -55,6 +55,10 @@ public:
 	inline QList<Resource*> getResourceList() {
 		return resources;
 	}
+
+private:
+	DidlObject(const DidlObject&);
+	DidlObject& operator= (const DidlObject&);
 
 protected:
 	QString elementName;

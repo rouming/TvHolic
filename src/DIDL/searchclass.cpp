@@ -11,10 +11,10 @@ QDomElement SearchClass::getElement()
 {
 	QDomDocument doc;
 	QDomElement elt = doc.createElement("upnp:seachClass");
-	elt.attribute("includeDerived", this->includeDerived ? "true" : "false");
+	elt.setAttribute("includeDerived", this->includeDerived ? "true" : "false");
 
 	if (!this->classFriendlyName.isEmpty()) {
-		elt.attribute("name", this->classFriendlyName);
+		elt.setAttribute("name", this->classFriendlyName);
 	}
 	QDomText text = doc.createTextNode(this->className);
 	elt.appendChild(text);

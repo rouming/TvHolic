@@ -21,14 +21,13 @@ Resource::Resource(QString value, QString protocolInfo, QString importUri,
 	this->protection = protection;
 }
 
-QDomElement Resource::toDidlElement()
+QDomElement Resource::toDidlElement(QDomDocument& doc)
 {
 	if (this->protocolInfo == "") {
 		qWarning() << "Could not create element from this resource: protocolInfo not set (required).";
 		//TODO exception?
 		return QDomElement();
 	}
-	QDomDocument doc("resource");
 	QDomElement root = doc.createElement("res");
 	// Required
 	root.setAttribute("protocolInfo", this->protocolInfo);
@@ -58,10 +57,9 @@ QDomElement Resource::toDidlElement()
 	return root;
 }
 
-QString Resource::toString()
+QString Resource::toString(QDomDocument& doc)
 {
-	QDomDocument doc;
-	doc.appendChild(this->toDidlElement());
+	doc.appendChild(this->toDidlElement(doc));
 	return doc.toString();
 }
 

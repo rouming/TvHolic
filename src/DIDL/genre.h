@@ -12,7 +12,7 @@ public:
 		  QList<CreateClass*> createClasses = QList<CreateClass*>(),
 		  QString longDescription = "", QString description = "");
 
-	QDomElement toDidlElement();
+	QDomElement toDidlElement(QDomDocument);
 
 protected:
 	QString longDescription;

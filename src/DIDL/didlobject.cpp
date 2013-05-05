@@ -28,9 +28,8 @@ void DidlObject::addResource(Resource *resource)
 		this->resources.append(resource);
 }
 
-QDomElement DidlObject::toDidlElement()
+QDomElement DidlObject::toDidlElement(QDomDocument& doc)
 {
-	QDomDocument doc("object");
 	QDomElement root = doc.createElement(this->elementName);
 	root.setAttribute("id", this->id);
 	root.setAttribute("parentID", this->parentId);
@@ -42,9 +41,9 @@ QDomElement DidlObject::toDidlElement()
 	root.appendChild(classElement);
 
 	if (this->restricted)
-		root.attribute("restricted", "true");
+		root.setAttribute("restricted", "true");
 	else
-		root.attribute("restricted", "false");
+		root.setAttribute("restricted", "false");
 
 	if (!this->creator.isEmpty()) {
 		QDomElement creatorElement = doc.createElement("dc:creator");
@@ -58,16 +57,15 @@ QDomElement DidlObject::toDidlElement()
 	}
 
 	foreach (Resource *r, this->resources) {
-		root.appendChild(r->toDidlElement());
+		root.appendChild(r->toDidlElement(doc));
 	}
 
 	return root;
 }
 
-QString DidlObject::toString()
+QString DidlObject::toString(QDomDocument& doc)
 {
-	QDomElement root = this->toDidlElement();
-	QDomDocument doc;
+	QDomElement root = this->toDidlElement(doc);
 	doc.appendChild(root);
 	return doc.toString();
 }

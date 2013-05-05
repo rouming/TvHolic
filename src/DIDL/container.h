@@ -15,8 +15,8 @@ public:
 			  QList<SearchClass*> searchClasses = QList<SearchClass*>(),
 			  QList<CreateClass*> createClasses = QList<CreateClass*>());
 
-	QDomElement toDidlElement();
-	QString toString();
+	QDomElement toDidlElement(QDomDocument&);
+	QString toString(QDomDocument&);
 	void addItem(Item *i);
 	void addContainer(Container *c);
 	inline QList<Container*> getContainers() {
@@ -26,7 +26,6 @@ public:
 		return this->items;
 	}
 	int getChildCount();
-	void setChildCount(int c);
 
 private:
 	// Attributes
@@ -35,7 +34,6 @@ private:
 	QList<CreateClass*> createClasses;
 	QList<Container*> containers;
 	QList<Item*> items;
-	int childCount;
 
 	// Methods
 };

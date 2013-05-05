@@ -15,10 +15,14 @@ using namespace Brisa;
 #define UPDATE_ID "UpdateID"
 #define OBJECT_ID "ObjectID"
 
+#define VIDEO_FILES "*.avi,*.mp4,*.mkv,*.mpeg"
+#define AUDIO_FILES "*.mp3"
+
 ContentDirectoryService::ContentDirectoryService() :
 	BrisaService(TYPE, ID, XML_PATH,
 				 CONTROL, EVENT_SUB),
-	m_root(new Container("Root"))
+	// Root container with '0' as id
+	m_root(new Container("0"))
 {
 	setDescriptionFile(":/resources/ContentDirectory1.xml");
 }
@@ -68,21 +72,27 @@ BrisaOutArgument* ContentDirectoryService::getsystemupdateid(BrisaInArgument *co
 BrisaOutArgument* ContentDirectoryService::browse(BrisaInArgument *const inArguments, BrisaAction *const action)
 {
 	(void)action;
-
 	BrisaOutArgument *outArgs = new BrisaOutArgument();
 	QString id = inArguments->value(OBJECT_ID);
-	qDebug() << "Browsing " << id;
-	Container *video = getContainerById(id, m_root);
-	QString result = "";
+	Container *container = getContainerById(id, m_root);
+	QString result;
 	int numberReturned = 0;
 	int totalMatches = 0;
-	if (video) {
-		qDebug() << video->getId();
-		result += video->toString();
-		numberReturned += video->getChildCount();
-		totalMatches += video->getChildCount();
+	if (container) {
+		QDomDocument doc;
+
+		foreach (Container *c, container->getContainers())
+			result += c->toString(doc);
+		foreach (Item *i, container->getItems())
+			result += i->toString(doc);
+
+		numberReturned = container->getChildCount();
+		totalMatches = container->getChildCount();
 	}
-	qDebug() << "Result:\n" << result;
+
+	result.replace(">", "&gt;");
+	result.replace("<", "&lt;");
+
 	outArgs->insert(RESULT, result);
 	outArgs->insert(NUMBER_RETURNED, QByteArray::number(numberReturned));
 	outArgs->insert(TOTAL_MATCHES, QByteArray::number(totalMatches));
@@ -102,8 +112,9 @@ BrisaOutArgument* ContentDirectoryService::search(BrisaInArgument *const inArgum
 	Container *container = getContainerById(id, m_root);
 	QString result = "";
 	if (container) {
+		QDomDocument doc;
 		qDebug() << container->getId();
-		result += container->toString();
+		result += container->toString(doc);
 	}
 	qDebug() << "Result:\n" << result;
 	outArgs->insert(RESULT, result);
@@ -130,19 +141,59 @@ BrisaOutArgument* ContentDirectoryService::searchFile(BrisaInArgument *const arg
 	return new BrisaOutArgument();
 }
 
-void ContentDirectoryService::addFile(QString file, QString parentId)
+bool ContentDirectoryService::addPath(QString path)
 {
-	QStringList parentPath = parentId.split("/");
-	Container *parent = getContainerById(parentPath.last(), m_root);
-	if (!parent) {
-		parent = createContainer(file.section("/", 0, parentPath.size() - 1), m_root);
+	QDir dir(path);
+	if (!dir.exists())
+		return false;
+	if (!dir.makeAbsolute())
+		return false;
+
+	QString absPath = dir.absolutePath();
+	QStringList dirs = absPath.split(QDir::separator(),
+									 QString::SkipEmptyParts);
+	if (dirs.size() == 0)
+		return false;
+
+	Container *container = m_root;
+	foreach (QString dir, dirs) {
+		Container *c = getContainerById(dir, container);
+		if (c == NULL) {
+			c = new Container(dir, container->getId(), dir);
+			container->addContainer(c);
+		}
+		container = c;
 	}
-	QString title = file;
-	VideoItem *video = new VideoItem(file, parentId);
-	parent->addItem(video);
-	getVariable("SystemUpdateID")->setAttribute(BrisaStateVariable::Value,
-				getVariable("SystemUpdateID")->getAttribute(
-					BrisaStateVariable::Value).toInt() + 1);
+
+/* XXX
+	QStringList audioFiles = dir.entryList(
+		QString(AUDIO_FILES).split(","),
+		QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files,
+		QDir::Time);
+	foreach (QString file, audioFiles) {
+		AudioItem *audio = new AudioItem(file, container->getId());
+		container->addItem(audio);
+		getVariable("SystemUpdateID")->setAttribute(
+			BrisaStateVariable::Value,
+			getVariable("SystemUpdateID")->getAttribute(
+				BrisaStateVariable::Value).toInt() + 1);
+	}
+*/
+
+	QStringList videoFiles = dir.entryList(
+		QString(VIDEO_FILES).split(","),
+		QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files,
+		QDir::Time);
+	foreach (QString file, videoFiles) {
+		VideoItem *video = new VideoItem(file, container->getId(), file);
+		container->addItem(video);
+		getVariable("SystemUpdateID")->setAttribute(
+			BrisaStateVariable::Value,
+			getVariable("SystemUpdateID")->getAttribute(
+				BrisaStateVariable::Value).toInt() + 1);
+	}
+
+	return true;
 }
 
 Container* ContentDirectoryService::getContainerById(QString id, Container *startContainer)
@@ -161,28 +212,4 @@ Container* ContentDirectoryService::getContainerById(QString id, Container *star
 		}
 	}
 	return 0;
-}
-
-Container* ContentDirectoryService::createContainer(QString id, Container *root)
-{
-	QStack<Container*> containers;
-	QStringList containersId = id.split("/");
-	for (int i = containersId.size() - 1; i > 0; i--) {
-		QString containerId = containersId.at(i);
-		Container *container = getContainerById(containerId, root);
-		if (!container) {
-			containers.push(new Container(containerId));
-		} else {
-			containers.push(container);
-			break;
-		}
-	}
-	root->addContainer(containers.top());
-	while (containers.size() > 1) {
-		Container *parent = containers.pop();
-		parent->addContainer(containers.top());
-	}
-	Container *created = containers.top();
-	qDebug() << "Created: " << created->getId();
-	return created;
 }

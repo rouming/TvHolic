@@ -10,7 +10,7 @@ public:
 		 bool restricted = false, QString creator = "",
 		 QString writeStatus = WRITE_STATUS_NOT_WRITABLE, QString refId = "");
 
-	QDomElement toDidlElement();
+	QDomElement toDidlElement(QDomDocument);
 
 protected:
 	QString refId;

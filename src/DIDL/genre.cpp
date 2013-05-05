@@ -18,7 +18,7 @@ Genre::Genre(QString id, QString parentId, QString title, bool restricted,
 	(void)description;
 }
 
-QDomElement Genre::toDidlElement()
+QDomElement Genre::toDidlElement(QDomDocument)
 {
 	return QDomElement();
 }

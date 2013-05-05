@@ -40,9 +40,9 @@ public:
 	/*!
 	 * \internal
 	 *
-	 * add an media file to the media server.
+	 * add path to media server.
 	 */
-	void addFile(QString file, QString parentId);
+	bool addPath(QString path);
 
 	/*!
 	 * \internal
@@ -50,13 +50,6 @@ public:
 	 * Get the container, given the correct id.
 	 */
 	Container* getContainerById(QString id, Container *startContainer);
-
-	/*!
-	 * \internal
-	 *
-	 * Create a new one.
-	 */
-	Container* createContainer(QString id, Container *root);
 
 public slots:
 
@@ -77,7 +70,6 @@ public slots:
 
 private:
 	Container* m_root;
-
 };
 
 #endif //__CONTENT_DIRECTORY_SERVICE_H__

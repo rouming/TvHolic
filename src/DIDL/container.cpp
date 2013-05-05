@@ -34,15 +34,14 @@ void Container::addItem(Item *i)
 
 int Container::getChildCount()
 {
-	if (!this->containers.empty() || !this->items.empty())
-		return this->containers.size() + this->items.size();
-	return childCount;
+	return this->containers.size() + this->items.size();
 }
 
-QDomElement Container::toDidlElement()
+QDomElement Container::toDidlElement(QDomDocument& doc)
 {
-	QDomElement root = DidlObject::toDidlElement();
-	root.attribute("childCount", QString::number(this->childCount));
+	QDomElement root = DidlObject::toDidlElement(doc);
+	root.setAttribute("childCount", QString::number(getChildCount()));
+
 	foreach (SearchClass *s, this->searchClasses) {
 		root.appendChild(s->getElement());
 	}
@@ -51,18 +50,12 @@ QDomElement Container::toDidlElement()
 		root.appendChild(c->getElement());
 	}
 
-	root.attribute("searchable", this->searchable ? "true" : "false");
+	root.setAttribute("searchable", this->searchable ? "true" : "false");
 	return root;
 }
 
-void Container::setChildCount(int c)
+QString Container::toString(QDomDocument& doc)
 {
-	this->childCount = c;
-}
-
-QString Container::toString()
-{
-	QDomDocument doc("object");
-	doc.appendChild(this->toDidlElement());
+	doc.appendChild(this->toDidlElement(doc));
 	return doc.toString();
 }

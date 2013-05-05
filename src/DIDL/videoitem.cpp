@@ -9,6 +9,7 @@ VideoItem::VideoItem(QString id, QString parentId, QString title, bool restricte
 	: Item(id, parentId, title, restricted, creator,
 		   writeStatus, refId)
 {
+	this->upnpClass = DidlObject::getUpnpClass() + ".videoItem";
 	this->genres = genres;
 	this->longDescription = longDescription;
 	this->producers = producers;
@@ -21,10 +22,9 @@ VideoItem::VideoItem(QString id, QString parentId, QString title, bool restricte
 	this->relations = relations;
 }
 
-QDomElement VideoItem::toDidlElement()
+QDomElement VideoItem::toDidlElement(QDomDocument& doc)
 {
-	QDomElement root = Item::toDidlElement();
-	QDomDocument doc;
+	QDomElement root = Item::toDidlElement(doc);
 	if (!this->longDescription.isEmpty()) {
 		QDomElement elt = doc.createElement("upnp:longDescription");
 		elt.appendChild(doc.createTextNode(this->longDescription));
@@ -79,9 +79,8 @@ QDomElement VideoItem::toDidlElement()
 	return root;
 }
 
-QString VideoItem::toString()
+QString VideoItem::toString(QDomDocument& doc)
 {
-	QDomDocument doc;
-	doc.appendChild(this->toDidlElement());
+	doc.appendChild(this->toDidlElement(doc));
 	return doc.toString();
 }

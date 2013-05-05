@@ -13,8 +13,8 @@ public:
 			 int nr_audio_channels = -1, QString resolution = "", int color_depth = 0,
 			 QString protection = "");
 
-	QDomElement toDidlElement();
-	QString toString();
+	QDomElement toDidlElement(QDomDocument&);
+	QString toString(QDomDocument&);
 
 private:
 	QString value;
