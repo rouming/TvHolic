@@ -20,7 +20,7 @@ ContentDirectoryService::ContentDirectoryService() :
 				 CONTROL, EVENT_SUB),
 	m_root(new Container("Root"))
 {
-	setDescriptionFile("ContentDirectory1.xml");
+	setDescriptionFile(":/resources/ContentDirectory1.xml");
 }
 
 ContentDirectoryService::~ContentDirectoryService()

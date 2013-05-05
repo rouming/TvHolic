@@ -12,7 +12,7 @@ ConnectionManagerService::ConnectionManagerService() :
 	BrisaService(TYPE, ID, XML_PATH,
 				 CONTROL, EVENT_SUB)
 {
-	this->setDescriptionFile("ConnectionManager1.xml");
+	this->setDescriptionFile(":/resources/ConnectionManager1.xml");
 }
 
 BrisaOutArgument* ConnectionManagerService::getprotocolinfo(

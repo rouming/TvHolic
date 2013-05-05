@@ -1,5 +1,6 @@
 <RCC>
-    <qresource prefix="/" >
-<!--        <file alias="ALIAS">SOME_FILE</file> -->
+    <qresource>
+        <file>resources/ConnectionManager1.xml</file>
+        <file>resources/ContentDirectory1.xml</file>
     </qresource>
 </RCC>
