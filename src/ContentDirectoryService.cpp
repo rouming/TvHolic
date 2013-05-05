@@ -14,6 +14,7 @@ using namespace Brisa;
 #define NUMBER_RETURNED "NumberReturned"
 #define UPDATE_ID "UpdateID"
 #define OBJECT_ID "ObjectID"
+#define BROWSE_FLAG "BrowseFlag"
 
 #define VIDEO_FILES "*.avi,*.mp4,*.mkv,*.mpeg"
 #define AUDIO_FILES "*.mp3"
@@ -74,6 +75,8 @@ BrisaOutArgument* ContentDirectoryService::browse(BrisaInArgument *const inArgum
 	(void)action;
 	BrisaOutArgument *outArgs = new BrisaOutArgument();
 	QString id = inArguments->value(OBJECT_ID);
+	QString browseFlag = inArguments->value(BROWSE_FLAG);
+
 	Container *container = getContainerById(id, m_root);
 	QString result;
 	int numberReturned = 0;
@@ -87,7 +90,12 @@ BrisaOutArgument* ContentDirectoryService::browse(BrisaInArgument *const inArgum
 			result += i->toString(doc);
 
 		numberReturned = container->getChildCount();
-		totalMatches = container->getChildCount();
+
+		// According to upnp spec
+		if (browseFlag.contains("BrowseMetadata"))
+			totalMatches = 1;
+		else
+			totalMatches = container->getChildCount();
 	}
 
 	result.replace(">", "&gt;");
@@ -186,6 +194,22 @@ bool ContentDirectoryService::addPath(QString path)
 		QDir::Time);
 	foreach (QString file, videoFiles) {
 		VideoItem *video = new VideoItem(file, container->getId(), file);
+		//XXX
+		Resource *res = new Resource("http://192.168.1.80:65500/get/0$1$33/GLD.avi",
+									 "http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=01",
+									 "", // import uri
+									 -1,  // size
+									 "00:11:29:00", // duration
+									 116736, // bitrate
+									 48000, // sample frequency
+									 -1, // bits per sample
+									 2, // audio channels
+									 "720x368", // resolution
+									 -1, // color depth
+									 "" // protection
+			);
+		video->addResource(res);
+
 		container->addItem(video);
 		getVariable("SystemUpdateID")->setAttribute(
 			BrisaStateVariable::Value,
