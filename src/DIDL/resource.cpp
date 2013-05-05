@@ -37,8 +37,8 @@ QDomElement Resource::toDidlElement(QDomDocument& doc)
 		root.setAttribute("importUri", this->importUri);
 	if (this->size >= 0)
 		root.setAttribute("size", this->size);
-	if (this->duration.isEmpty())
-		root.setAttribute("size", this->size);
+	if (!this->duration.isEmpty())
+		root.setAttribute("duration", this->duration);
 	if (this->bitrate >= 0)
 		root.setAttribute("bitrate", this->bitrate);
 	if (this->sampleFrequency >= 0)
@@ -46,13 +46,15 @@ QDomElement Resource::toDidlElement(QDomDocument& doc)
 	if (this->bitsPerSample >= 0)
 		root.setAttribute("bitsPerSample", this->bitsPerSample);
 	if (this->nrAudioChannels >= 0)
-		root.setAttribute("nrAudioChannel", this->nrAudioChannels);
+		root.setAttribute("nrAudioChannels", this->nrAudioChannels);
 	if (!this->resolution.isEmpty())
 		root.setAttribute("resolution", this->resolution);
 	if (this->colorDepth >= 0)
 		root.setAttribute("colorDepth", this->colorDepth);
 	if (!this->protection.isEmpty())
 		root.setAttribute("protection", this->protection);
+	if (!this->value.isEmpty())
+		root.appendChild(doc.createTextNode(this->value));
 
 	return root;
 }
