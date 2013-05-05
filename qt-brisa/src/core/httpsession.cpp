@@ -23,8 +23,10 @@
  *
  */
 
-#include "httpsession.h"
 #include <QTcpSocket>
+#include <QBuffer>
+
+#include "httpsession.h"
 #include "httpsessionmanager.h"
 
 #define DBG_PREFIX "HttpConnection: "
@@ -95,36 +97,39 @@ int HttpSession::isRequestSupported(const HttpRequest &request) const
 void HttpSession::writeResponse(HttpResponse r)
 {
 	QByteArray ba;
+	QBuffer b(&ba);
+	b.open(QBuffer::ReadWrite);
+
 	prepareResponse(requestInfo, r);
 
-	ba.append(r.httpVersion().operator QByteArray());
-	ba.append(" ");
-	ba.append(QByteArray::number(r.statusCode()));
-	ba.append(" ");
-	ba.append(r.reasonPhrase());
-	ba.append("\r\n");
+	b.write(r.httpVersion().operator QByteArray());
+	b.write(" ");
+	b.write(QByteArray::number(r.statusCode()));
+	b.write(" ");
+	b.write(r.reasonPhrase());
+	b.write("\r\n");
 
 	for (QHash<QByteArray, QByteArray>::const_iterator i = r.headersBeginIterator(); i != r.headersEndIterator(); ++i) {
-		ba.append(i.key());
+		b.write(i.key());
 		if (!i.value().isNull()) {
-			ba.append(": ");
-			ba.append(i.value());
+			b.write(": ");
+			b.write(i.value());
 		} else {
-			ba.append(":");
+			b.write(":");
 		}
-		ba.append("\r\n");
+		b.write("\r\n");
 	}
 
-	ba.append("\r\n");
+	b.write("\r\n");
+
+	if (r.entityBody())
+		writeEntityBody(r, &b);
+
+	socket->write(ba);
 
 #ifdef DUMP_NETWORK
 	dump(ba, socket, DUMP_OUT);
 #endif
-
-	socket->write(ba);
-
-	if (r.entityBody())
-		writeEntityBody(r, socket);
 
 	if (r.closeConnection())
 		socket->close();
@@ -135,13 +140,13 @@ void HttpSession::prepareResponse(const HttpRequest &, HttpResponse &r)
 	r.setHeader("CONTENT-LENGTH", QByteArray::number(r.entitySize()));
 }
 
-void HttpSession::writeEntityBody(const HttpResponse &r, QTcpSocket *s)
+void HttpSession::writeEntityBody(const HttpResponse &r, QIODevice *io)
 {
 	QIODevice *body = r.entityBody();
 
 	body->seek(0);
 	while (!body->atEnd())
-		s->write(body->read(MAPPED_MEMORY_SIZE));
+		io->write(body->read(MAPPED_MEMORY_SIZE));
 }
 
 void HttpSession::onReadyRead()

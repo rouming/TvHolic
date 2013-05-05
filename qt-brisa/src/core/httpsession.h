@@ -71,7 +71,7 @@ protected:
 	virtual void onRequest(const HttpRequest &request) = 0;
 
 	virtual void prepareResponse(const HttpRequest &, HttpResponse &);
-	virtual void writeEntityBody(const HttpResponse &, QTcpSocket *);
+	virtual void writeEntityBody(const HttpResponse &, QIODevice *);
 
 	virtual void sessionStarted() {
 	}
