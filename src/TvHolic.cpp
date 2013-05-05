@@ -102,7 +102,6 @@ int main(int argc, char* argv[])
 {
 	QCoreApplication app(argc, argv);
 	TvHolic tvHolic;
-	int ret;
 
 	initSIGTERM();
 
