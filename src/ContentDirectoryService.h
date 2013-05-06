@@ -20,7 +20,7 @@ public:
 	 *
 	 * Create a new instance object of this class.
 	 */
-	ContentDirectoryService();
+	ContentDirectoryService(const QString &location);
 
 	virtual ~ContentDirectoryService();
 	/*!
@@ -44,12 +44,8 @@ public:
 	 */
 	bool addPath(QString path);
 
-	/*!
-	 * \internal
-	 *
-	 * Get the container, given the correct id.
-	 */
-	Container* getContainerById(QString id, Container *startContainer);
+private:
+	bool fillContainer(Container*&, const QString&, const QStringList&);
 
 public slots:
 
@@ -69,7 +65,8 @@ public slots:
 										BrisaAction * const action);
 
 private:
-	Container* m_root;
+	QString m_urlBase;
+	QStringList m_rootPaths;
 };
 
 #endif //__CONTENT_DIRECTORY_SERVICE_H__

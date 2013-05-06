@@ -16,21 +16,20 @@ using namespace Brisa;
 #define OBJECT_ID "ObjectID"
 #define BROWSE_FLAG "BrowseFlag"
 
-#define VIDEO_FILES "*.avi,*.mp4,*.mkv,*.mpeg"
-#define AUDIO_FILES "*.mp3"
+#define ROOT_ID "0"
+#define VIDEO_FILES ".*\\.(avi|mp4|mkv|mpeg)"
+#define AUDIO_FILES ".*\\.(mp3)"
 
-ContentDirectoryService::ContentDirectoryService() :
+ContentDirectoryService::ContentDirectoryService(const QString &urlBase) :
 	BrisaService(TYPE, ID, XML_PATH,
 				 CONTROL, EVENT_SUB),
-	// Root container with '0' as id
-	m_root(new Container("0"))
+	m_urlBase(urlBase)
 {
 	setDescriptionFile(":/resources/ContentDirectory1.xml");
 }
 
 ContentDirectoryService::~ContentDirectoryService()
 {
-	delete m_root;
 }
 
 BrisaOutArgument* ContentDirectoryService::getsearchcapabilities(BrisaInArgument *const inArguments, BrisaAction *const action)
@@ -70,33 +69,146 @@ BrisaOutArgument* ContentDirectoryService::getsystemupdateid(BrisaInArgument *co
 	return outArgs;
 }
 
-BrisaOutArgument* ContentDirectoryService::browse(BrisaInArgument *const inArguments, BrisaAction *const action)
+bool ContentDirectoryService::fillContainer(Container *&container,
+											const QString &dir,
+											const QStringList &children)
+{
+	if (dir == ROOT_ID)
+		container = new Container(ROOT_ID);
+	else {
+		QFileInfo finfo(dir);
+		Q_ASSERT(finfo.isDir());
+
+		QString path = finfo.absolutePath();
+		QString fileName = finfo.fileName();
+		QString filePath = finfo.absoluteFilePath();
+
+		// Parent root path?
+		if (m_rootPaths.contains(path))
+			path = ROOT_ID;
+
+		container = new Container(filePath.toUtf8().toBase64(),
+								  path.toUtf8().toBase64(),
+								  fileName);
+	}
+
+	foreach (QString chPath, children) {
+		QFileInfo finfo(chPath);
+		QString path = finfo.absolutePath();
+		QString fileName = finfo.fileName();
+		QString filePath = finfo.absoluteFilePath();
+
+		if (finfo.isDir())
+			container->addChild(new Container(filePath.toUtf8().toBase64(),
+											  path.toUtf8().toBase64(),
+											  fileName));
+		else if (finfo.isFile()) {
+			if (fileName.contains(QRegExp(VIDEO_FILES))) {
+				VideoItem *item = new VideoItem(filePath.toUtf8().toBase64(),
+												path.toUtf8().toBase64(),
+												fileName);
+				//XXX
+				Resource *res =
+					new Resource(QString("%1/get/%2").
+									 arg(m_urlBase).arg(item->getId()),
+								 "http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=01",
+								 "", // import uri
+								 -1,  // size
+								 "00:11:29:00", // duration
+								 116736, // bitrate
+								 48000, // sample frequency
+								 -1, // bits per sample
+								 2, // audio channels
+								 "720x368", // resolution
+								 -1, // color depth
+								 "" // protection
+						);
+				item->addResource(res);
+				container->addChild(item);
+			}
+			else if (fileName.contains(QRegExp(AUDIO_FILES))) {
+				//XXX TODO:
+				continue;
+			}
+			else
+				continue;
+		}
+	}
+
+	return true;
+}
+
+BrisaOutArgument* ContentDirectoryService::browse(BrisaInArgument *const inArgs,
+												  BrisaAction *const action)
 {
 	(void)action;
-	BrisaOutArgument *outArgs = new BrisaOutArgument();
-	QString id = inArguments->value(OBJECT_ID);
-	QString browseFlag = inArguments->value(BROWSE_FLAG);
-
-	Container *container = getContainerById(id, m_root);
 	QString result;
 	int numberReturned = 0;
 	int totalMatches = 0;
-	if (container) {
-		QDomDocument doc;
+	BrisaOutArgument *outArgs = new BrisaOutArgument();
+	QString id = inArgs->value(OBJECT_ID);
+	bool browseChildren = inArgs->value(BROWSE_FLAG).contains("BrowseDirectChildren");
+	QStringList children;
+	Container *container = NULL;
+	QDomDocument doc;
+	bool res;
 
-		foreach (Container *c, container->getContainers())
-			result += c->toString(doc);
-		foreach (Item *i, container->getItems())
-			result += i->toString(doc);
-
-		numberReturned = container->getChildCount();
-
-		// According to upnp spec
-		if (browseFlag.contains("BrowseMetadata"))
-			totalMatches = 1;
-		else
-			totalMatches = container->getChildCount();
+	// Root folder?
+	if (id == ROOT_ID) {
+		children = m_rootPaths;
 	}
+	else {
+		id = QByteArray::fromBase64(id.toUtf8());
+
+		QFileInfo finfo(id);
+
+		if (!finfo.exists()) {
+			qWarning("Error: id %s does not exist", id.toUtf8().constData());
+			goto out;
+		}
+		if (browseChildren && !finfo.isDir()) {
+			qWarning("Error: id %s is not a dir, but browse children flag is "
+					 "specified", id.toUtf8().constData());
+			goto out;
+		}
+
+		if (finfo.isFile()) {
+			Q_ASSERT(!browseChildren);
+			children << finfo.absoluteFilePath();
+			// Get parent path
+			id = finfo.absolutePath();
+		}
+		else if (finfo.isDir()) {
+			children = finfo.dir().entryList(
+				QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files,
+				QDir::Time);
+		}
+		else {
+			qWarning("Error: unknown id type %s", id.toUtf8().constData());
+			goto out;
+		}
+	}
+
+	res = fillContainer(container, id, children);
+	if (!res) {
+		qWarning("Error: filling container failed");
+		goto out;
+	}
+
+	foreach (DidlObject *c, container->getChildren())
+		result += c->toString(doc);
+
+	numberReturned = container->getChildCount();
+	//TODO: for now we assume total matches == number returned
+	totalMatches = container->getChildCount();
+
+	if (!browseChildren) {
+		Q_ASSERT(numberReturned == 0 || numberReturned == 1);
+		Q_ASSERT(totalMatches == 0 || totalMatches == 1);
+	}
+
+out:
+	delete container;
 
 	result.replace(">", "&gt;");
 	result.replace("<", "&lt;");
@@ -117,13 +229,7 @@ BrisaOutArgument* ContentDirectoryService::search(BrisaInArgument *const inArgum
 	BrisaOutArgument *outArgs = new BrisaOutArgument();
 	QString id = inArguments->value(CONTAINER_ID);
 	qDebug() << "Searching " << id;
-	Container *container = getContainerById(id, m_root);
 	QString result = "";
-	if (container) {
-		QDomDocument doc;
-		qDebug() << container->getId();
-		result += container->toString(doc);
-	}
 	qDebug() << "Result:\n" << result;
 	outArgs->insert(RESULT, result);
 	return outArgs;
@@ -156,84 +262,9 @@ bool ContentDirectoryService::addPath(QString path)
 		return false;
 	if (!dir.makeAbsolute())
 		return false;
-
 	QString absPath = dir.absolutePath();
-	QStringList dirs = absPath.split(QDir::separator(),
-									 QString::SkipEmptyParts);
-	if (dirs.size() == 0)
+	if (m_rootPaths.contains(absPath))
 		return false;
-
-	Container *container = m_root;
-	foreach (QString dir, dirs) {
-		Container *c = getContainerById(dir, container);
-		if (c == NULL) {
-			c = new Container(dir, container->getId(), dir);
-			container->addContainer(c);
-		}
-		container = c;
-	}
-
-/* XXX
-	QStringList audioFiles = dir.entryList(
-		QString(AUDIO_FILES).split(","),
-		QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files,
-		QDir::Time);
-	foreach (QString file, audioFiles) {
-		AudioItem *audio = new AudioItem(file, container->getId());
-		container->addItem(audio);
-		getVariable("SystemUpdateID")->setAttribute(
-			BrisaStateVariable::Value,
-			getVariable("SystemUpdateID")->getAttribute(
-				BrisaStateVariable::Value).toInt() + 1);
-	}
-*/
-
-	QStringList videoFiles = dir.entryList(
-		QString(VIDEO_FILES).split(","),
-		QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files,
-		QDir::Time);
-	foreach (QString file, videoFiles) {
-		VideoItem *video = new VideoItem(file, container->getId(), file);
-		//XXX
-		Resource *res = new Resource("http://192.168.1.80:65500/get/0$1$33/GLD.avi",
-									 "http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=01",
-									 "", // import uri
-									 -1,  // size
-									 "00:11:29:00", // duration
-									 116736, // bitrate
-									 48000, // sample frequency
-									 -1, // bits per sample
-									 2, // audio channels
-									 "720x368", // resolution
-									 -1, // color depth
-									 "" // protection
-			);
-		video->addResource(res);
-
-		container->addItem(video);
-		getVariable("SystemUpdateID")->setAttribute(
-			BrisaStateVariable::Value,
-			getVariable("SystemUpdateID")->getAttribute(
-				BrisaStateVariable::Value).toInt() + 1);
-	}
-
+	m_rootPaths.append(absPath);
 	return true;
-}
-
-Container* ContentDirectoryService::getContainerById(QString id, Container *startContainer)
-{
-	if (startContainer->getId() == id) {
-		return startContainer;
-	}
-	foreach (Container *c, startContainer->getContainers()) {
-		if (c->getId() == id) {
-			return c;
-		} else {
-			Container *search = getContainerById(id, c);
-			if (search) {
-				return search;
-			}
-		}
-	}
-	return 0;
 }

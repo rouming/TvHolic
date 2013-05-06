@@ -86,7 +86,7 @@ TvHolic::TvHolic() :
 				MANUFACTURER_URL, MODEL_DESCRIPTION,
 				MODEL_NAME, MODEL_NUMBER, MODEL_URL,
 				SERIAL_NUMBER, getCompleteUuid()),
-	m_contDirService(new ContentDirectoryService),
+	m_contDirService(new ContentDirectoryService(getAttribute(BrisaDevice::UrlBase))),
 	m_connMngService(new ConnectionManagerService)
 {
 	addService(m_connMngService);
