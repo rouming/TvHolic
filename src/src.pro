@@ -20,6 +20,7 @@ HEADERS += \
            AsIsTranscoder.h \
            ConnectionManagerService.h \
            ContentDirectoryService.h \
+           MediaInfo.h \
            \
            DIDL/didlobject.h \
            DIDL/resource.h \
@@ -42,6 +43,7 @@ SOURCES += \
            AsIsTranscoder.cpp \
            ConnectionManagerService.cpp \
            ContentDirectoryService.cpp \
+           MediaInfo.cpp \
            \
            DIDL/didlobject.cpp \
            DIDL/resource.cpp \

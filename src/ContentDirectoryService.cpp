@@ -1,4 +1,5 @@
 #include "ContentDirectoryService.h"
+#include "MediaInfo.h"
 
 using namespace Brisa;
 
@@ -104,22 +105,26 @@ bool ContentDirectoryService::fillContainer(Container *&container,
 											  fileName));
 		else if (finfo.isFile()) {
 			if (fileName.contains(QRegExp(VIDEO_FILES))) {
+				MediaInfo mi;
+				if (!MediaInfo::fillMediaInfo(filePath, mi))
+					qWarning("Error: can't fill media info for file %s",
+							 filePath.toUtf8().constData());
+
 				VideoItem *item = new VideoItem(filePath.toUtf8().toBase64(),
 												path.toUtf8().toBase64(),
 												fileName);
-				//XXX
 				Resource *res =
 					new Resource(QString("%1/get/%2").
 									 arg(m_urlBase).arg(item->getId()),
 								 "http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=01",
 								 "", // import uri
-								 -1,  // size
-								 "00:11:29:00", // duration
-								 116736, // bitrate
-								 48000, // sample frequency
+								 mi.fileSize,
+								 mi.duration,
+								 mi.audioBitrate,
+								 mi.audioRate,
 								 -1, // bits per sample
-								 2, // audio channels
-								 "720x368", // resolution
+								 mi.audioChannels,
+								 mi.videoResolution,
 								 -1, // color depth
 								 "" // protection
 						);
