@@ -48,6 +48,7 @@ bool MencoderTranscoder::startTranscoding()
 	if (m_state != Stopped)
 		return false;
 
+	//XXX
 	QString mencoder("-really-quiet -of mpeg -ovc lavc -lavcopts vcodec=mpeg2video:mbd=2:keyint=25:vrc_minrate=600:vbitrate=2500 -oac lavc -af lavcresample=44100 -srate 44100 -mpegopts format=mpeg2 /home/roman/Desktop/GLD.avi -o -");
 
 	return m_mencoder.start("/usr/bin/mencoder", mencoder.split(" "));

@@ -36,6 +36,7 @@ bool AsIsTranscoder::startTranscoding()
 		return false;
 
 	do {
+		//XXX
 		m_fd = ::open("/home/roman/Desktop/GLD.avi", O_CLOEXEC, O_RDONLY);
 	} while (m_fd == -1 && errno == EINTR);
 
