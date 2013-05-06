@@ -21,7 +21,7 @@ AudioItem::AudioItem(QString id, QString parentId, QString title, bool restricte
 	(void)rights;
 }
 
-QDomElement AudioItem::toDidlElement(QDomDocument)
+QDomElement AudioItem::toDidlElement(QDomDocument&)
 {
 	return QDomElement();
 }

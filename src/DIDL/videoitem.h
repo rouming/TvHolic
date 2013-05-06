@@ -18,8 +18,7 @@ public:
 			  QStringList publishers = QStringList(), QString language = "",
 			  QStringList relations = QStringList());
 
-	QDomElement toDidlElement(QDomDocument&);
-	QString toString(QDomDocument&);
+	virtual QDomElement toDidlElement(QDomDocument&);
 
 protected:
 	QString longDescription;

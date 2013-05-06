@@ -21,10 +21,10 @@ public:
 	DidlObject(QString id = "",  QString parentId = "", QString title = "", bool restricted = false,
 			   QString creator = "", QString writeStatus = WRITE_STATUS_NOT_WRITABLE);
 
-	~DidlObject();
+	virtual ~DidlObject();
 	void addResource(Resource *resource);
 	QString toString(QDomDocument&);
-	QDomElement toDidlElement(QDomDocument&);
+	virtual QDomElement toDidlElement(QDomDocument&);
 	inline QString getElementName() {
 		return elementName;
 	}

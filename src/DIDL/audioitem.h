@@ -15,7 +15,7 @@ public:
 			  QString description = "", QString longDescription = "", QStringList publishers = QStringList(),
 			  QString language = "", QStringList relations = QStringList(), QStringList rights = QStringList());
 
-	QDomElement toDidlElement(QDomDocument);
+	virtual QDomElement toDidlElement(QDomDocument&);
 
 protected:
 	QList<Genre*> genres;

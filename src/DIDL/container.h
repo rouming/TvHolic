@@ -14,16 +14,12 @@ public:
 			  QString writeStatus = WRITE_STATUS_NOT_WRITABLE, bool searchable = true,
 			  QList<SearchClass*> searchClasses = QList<SearchClass*>(),
 			  QList<CreateClass*> createClasses = QList<CreateClass*>());
+	~Container();
 
-	QDomElement toDidlElement(QDomDocument&);
-	QString toString(QDomDocument&);
-	void addItem(Item *i);
-	void addContainer(Container *c);
-	inline QList<Container*> getContainers() {
-		return this->containers;
-	}
-	inline QList<Item*> getItems() {
-		return this->items;
+	virtual QDomElement toDidlElement(QDomDocument&);
+	void addChild(DidlObject *c);
+	inline const QList<DidlObject*> getChildren() {
+		return this->children;
 	}
 	int getChildCount();
 
@@ -32,8 +28,7 @@ private:
 	bool searchable;
 	QList<SearchClass*> searchClasses;
 	QList<CreateClass*> createClasses;
-	QList<Container*> containers;
-	QList<Item*> items;
+	QList<DidlObject*> children;
 
 	// Methods
 };

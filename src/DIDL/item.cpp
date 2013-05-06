@@ -9,7 +9,7 @@ Item::Item(QString id, QString parentId, QString title, bool restricted,
 	this->refId = refId;
 }
 
-QDomElement Item::toDidlElement(QDomDocument doc)
+QDomElement Item::toDidlElement(QDomDocument& doc)
 {
 	QDomElement root = DidlObject::toDidlElement(doc);
 	root.setAttribute("refID", this->refId);

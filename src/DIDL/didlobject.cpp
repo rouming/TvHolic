@@ -65,7 +65,6 @@ QDomElement DidlObject::toDidlElement(QDomDocument& doc)
 
 QString DidlObject::toString(QDomDocument& doc)
 {
-	QDomElement root = this->toDidlElement(doc);
-	doc.appendChild(root);
+	doc.appendChild(this->toDidlElement(doc));
 	return doc.toString();
 }

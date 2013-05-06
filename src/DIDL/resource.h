@@ -12,9 +12,9 @@ public:
 			 int sample_frequency = -1, int bits_per_sample = -1,
 			 int nr_audio_channels = -1, QString resolution = "", int color_depth = 0,
 			 QString protection = "");
+	virtual ~Resource() {}
 
-	QDomElement toDidlElement(QDomDocument&);
-	QString toString(QDomDocument&);
+	virtual QDomElement toDidlElement(QDomDocument&);
 
 private:
 	QString value;

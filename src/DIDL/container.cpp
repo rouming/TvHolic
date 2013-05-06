@@ -16,25 +16,22 @@ Container::Container(QString id, QString parentId, QString title,
 	this->searchable = searchable;
 }
 
-void Container::addContainer(Container *c)
+Container::~Container()
 {
-	if (!this->containers.contains(c)) {
-		this->containers.append(c);
-		c->setParentId(this->id);
-	}
+	qDeleteAll(this->children);
 }
 
-void Container::addItem(Item *i)
+void Container::addChild(DidlObject *c)
 {
-	if (!this->items.contains(i)) {
-		this->items.append(i);
-		i->setParentId(this->id);
+	if (!this->children.contains(c)) {
+		this->children.append(c);
+		c->setParentId(this->id);
 	}
 }
 
 int Container::getChildCount()
 {
-	return this->containers.size() + this->items.size();
+	return this->children.size();
 }
 
 QDomElement Container::toDidlElement(QDomDocument& doc)
@@ -52,10 +49,4 @@ QDomElement Container::toDidlElement(QDomDocument& doc)
 
 	root.setAttribute("searchable", this->searchable ? "true" : "false");
 	return root;
-}
-
-QString Container::toString(QDomDocument& doc)
-{
-	doc.appendChild(this->toDidlElement(doc));
-	return doc.toString();
 }

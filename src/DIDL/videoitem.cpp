@@ -78,9 +78,3 @@ QDomElement VideoItem::toDidlElement(QDomDocument& doc)
 
 	return root;
 }
-
-QString VideoItem::toString(QDomDocument& doc)
-{
-	doc.appendChild(this->toDidlElement(doc));
-	return doc.toString();
-}

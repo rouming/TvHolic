@@ -58,10 +58,3 @@ QDomElement Resource::toDidlElement(QDomDocument& doc)
 
 	return root;
 }
-
-QString Resource::toString(QDomDocument& doc)
-{
-	doc.appendChild(this->toDidlElement(doc));
-	return doc.toString();
-}
-
