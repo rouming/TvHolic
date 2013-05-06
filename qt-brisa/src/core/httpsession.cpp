@@ -85,6 +85,11 @@ void HttpSession::setSession(int socketDescriptor)
 	sessionStarted();
 }
 
+QTcpSocket * HttpSession::getSocket() const
+{
+	return socket;
+}
+
 int HttpSession::isRequestSupported(const HttpRequest &request) const
 {
 	if (request.httpVersion() <= lastSupportedHttpVersion) {  //1.1

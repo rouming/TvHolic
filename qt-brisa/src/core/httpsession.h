@@ -46,6 +46,7 @@ public:
 	virtual ~HttpSession();
 
 	void setSession(int socketDescriptor);
+	QTcpSocket * getSocket() const;
 
 	// @ret should return the HTTP response status (404 not found, method not implemented,
 	// ...) or 0. If a 0 is returned, the server continues to read the request, otherwise,
