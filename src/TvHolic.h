@@ -13,6 +13,8 @@ public:
 	TvHolic();
 	~TvHolic();
 
+	void addPath(const QString&);
+
 private:
 	ContentDirectoryService* m_contDirService;
 	ConnectionManagerService* m_connMngService;

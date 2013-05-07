@@ -98,13 +98,24 @@ TvHolic::~TvHolic()
 	stop();
 }
 
+void TvHolic::addPath(const QString& path)
+{
+	m_contDirService->addPath(path);
+}
+
 int main(int argc, char* argv[])
 {
+	if (argc != 2) {
+		printf("Usage: <path to some folder with media files>\n");
+		return -1;
+	}
+
 	QCoreApplication app(argc, argv);
 	TvHolic tvHolic;
 
 	initSIGTERM();
 
+	tvHolic.addPath(argv[1]);
 	tvHolic.start();
 
 	return app.exec();
