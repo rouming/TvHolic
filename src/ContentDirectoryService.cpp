@@ -162,7 +162,7 @@ BrisaOutArgument* ContentDirectoryService::browse(BrisaInArgument *const inArgs,
 		children = m_rootPaths;
 	}
 	else {
-		id = QByteArray::fromBase64(id.toUtf8());
+		id = QString::fromUtf8(QByteArray::fromBase64(id.toUtf8()));
 
 		QFileInfo finfo(id);
 
