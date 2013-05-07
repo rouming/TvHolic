@@ -178,14 +178,17 @@ BrisaOutArgument* ContentDirectoryService::browse(BrisaInArgument *const inArgs,
 
 		if (finfo.isFile()) {
 			Q_ASSERT(!browseChildren);
-			children << finfo.absoluteFilePath();
+			children.append(finfo.absoluteFilePath());
 			// Get parent path
 			id = finfo.absolutePath();
 		}
 		else if (finfo.isDir()) {
-			children = finfo.dir().entryList(
-				QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files,
-				QDir::Time);
+			QFileInfoList childrenInf =
+				QDir(finfo.absoluteFilePath()).entryInfoList(
+					QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files,
+					QDir::Time);
+			foreach (QFileInfo finfo, childrenInf)
+				children.append(finfo.absoluteFilePath());
 		}
 		else {
 			qWarning("Error: unknown id type %s", id.toUtf8().constData());
