@@ -270,11 +270,12 @@ inline void BrisaService::respondAction(BrisaWebserverSession *session, const Br
 					   "<u:" + actionName.toUtf8() + "Response xmlns:u=\"" + serviceType.toUtf8() + "\">\r\n");
 
 	for (QMap<QString, QString>::const_iterator i = outArgs->begin(); i != outArgs->end(); ++i) {
-		message.append("<" + i.key() + ">" + i.value() + "</" + i.key()
-					   + ">\r\n");
+		message.append("<" + i.key().toUtf8() + ">" +
+					   i.value().toUtf8() +
+					   "</" + i.key().toUtf8() + ">\r\n");
 	}
 
-	message.append("</u:" + actionName + "Response>\r\n"
+	message.append("</u:" + actionName.toUtf8() + "Response>\r\n"
 				   "</s:Body>\r\n"
 				   "</s:Envelope>\r\n");
 
