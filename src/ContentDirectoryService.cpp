@@ -155,7 +155,6 @@ BrisaOutArgument* ContentDirectoryService::browse(BrisaInArgument *const inArgs,
 	bool browseChildren = inArgs->value(BROWSE_FLAG).contains("BrowseDirectChildren");
 	QStringList children;
 	Container *container = NULL;
-	QDomDocument doc;
 	bool res;
 
 	// Root folder?
@@ -200,8 +199,10 @@ BrisaOutArgument* ContentDirectoryService::browse(BrisaInArgument *const inArgs,
 		goto out;
 	}
 
-	foreach (DidlObject *c, container->getChildren())
+	foreach (DidlObject *c, container->getChildren()) {
+		QDomDocument doc;
 		result += c->toString(doc);
+	}
 
 	numberReturned = container->getChildCount();
 	//TODO: for now we assume total matches == number returned
