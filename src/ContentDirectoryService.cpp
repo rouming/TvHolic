@@ -179,8 +179,7 @@ BrisaOutArgument* ContentDirectoryService::browse(BrisaInArgument *const inArgs,
 			goto out;
 		}
 
-		if (finfo.isFile()) {
-			Q_ASSERT(!browseChildren);
+		if (!browseChildren) {
 			children.append(finfo.absoluteFilePath());
 			// Get parent path
 			id = finfo.absolutePath();
