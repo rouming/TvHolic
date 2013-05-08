@@ -99,10 +99,13 @@ bool ContentDirectoryService::fillContainer(Container *&container,
 		QString fileName = finfo.fileName();
 		QString filePath = finfo.absoluteFilePath();
 
-		if (finfo.isDir())
-			container->addChild(new Container(filePath.toUtf8().toBase64(),
-											  path.toUtf8().toBase64(),
-											  fileName));
+		if (finfo.isDir()) {
+			Container *chContainer = new Container(filePath.toUtf8().toBase64(),
+												   path.toUtf8().toBase64(),
+												   fileName);
+			chContainer->setChildCount(QDir(filePath).count());
+			container->addChild(chContainer);
+		}
 		else if (finfo.isFile()) {
 			if (fileName.contains(QRegExp(VIDEO_FILES))) {
 				MediaInfo mi;

@@ -22,6 +22,7 @@ public:
 		return this->children;
 	}
 	int getChildCount();
+	void setChildCount(int cnt);
 
 private:
 	// Attributes
@@ -29,8 +30,8 @@ private:
 	QList<SearchClass*> searchClasses;
 	QList<CreateClass*> createClasses;
 	QList<DidlObject*> children;
+	int childrenCnt;
 
-	// Methods
 };
 
 #endif // CONTAINER_H

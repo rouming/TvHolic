@@ -14,6 +14,7 @@ Container::Container(QString id, QString parentId, QString title,
 	this->createClasses = createClasses;
 	this->searchClasses = searchClasses;
 	this->searchable = searchable;
+	this->childrenCnt = 0;
 }
 
 Container::~Container()
@@ -31,7 +32,14 @@ void Container::addChild(DidlObject *c)
 
 int Container::getChildCount()
 {
-	return this->children.size();
+	return this->children.size() ? this->children.size() : childrenCnt;
+}
+
+void Container::setChildCount(int cnt)
+{
+	if (this->children.size())
+		return;
+	this->childrenCnt = cnt;
 }
 
 QDomElement Container::toDidlElement(QDomDocument& doc)
