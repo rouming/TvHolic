@@ -30,7 +30,8 @@ using namespace Brisa;
 
 HttpMessage::HttpMessage(HttpVersion httpVersion) :
 	m_httpVersion(httpVersion),
-	m_entityBody(NULL)
+	m_entityBody(NULL),
+	m_entitySize(0)
 {
 }
 

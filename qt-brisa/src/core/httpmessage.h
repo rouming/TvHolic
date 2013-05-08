@@ -61,6 +61,7 @@ public:
 
 	// creates a QBuffer
 	void setEntityBody(const QByteArray &body);
+	void setEntitySize(qint64);
 
 	QPair<qlonglong, qlonglong> range() const;
 	void setRange(const QPair<qlonglong, qlonglong> &);
@@ -86,6 +87,8 @@ private:
 
 	mutable QIODevice *m_entityBody;
 	QPair<qlonglong, qlonglong> m_range;
+
+	qint64 m_entitySize;
 };
 
 } // namespace Brisa
@@ -127,7 +130,14 @@ inline qint64 Brisa::HttpMessage::entitySize() const
 	if(m_entityBody)
 		return m_entityBody->size();
 	else
-		return 0;
+		return m_entitySize;
+}
+
+inline void Brisa::HttpMessage::setEntitySize(qint64 sz)
+{
+	if (m_entityBody)
+		return;
+	m_entitySize = sz;
 }
 
 inline QIODevice *Brisa::HttpMessage::entityBody() const
