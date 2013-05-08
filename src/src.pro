@@ -16,6 +16,7 @@ HEADERS += \
            Global.h \
            Encoder.h \
            PipeProcess.h \
+           Transcoder.h \
            MencoderTranscoder.h \
            AsIsTranscoder.h \
            ConnectionManagerService.h \

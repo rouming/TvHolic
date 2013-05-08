@@ -5,7 +5,7 @@
 #include "PipeProcess.h"
 #include "Transcoder.h"
 
-class MencoderTranscoder : public QObject, public Transcoder
+class MencoderTranscoder : public Transcoder
 {
 	Q_OBJECT
 public:

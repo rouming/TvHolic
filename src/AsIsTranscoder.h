@@ -4,7 +4,7 @@
 #include <QSocketNotifier>
 #include "Transcoder.h"
 
-class AsIsTranscoder : public QObject, public Transcoder
+class AsIsTranscoder : public Transcoder
 {
 	Q_OBJECT
 public:

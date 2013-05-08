@@ -3,8 +3,9 @@
 
 #include <QTcpSocket>
 
-class Transcoder
+class Transcoder : public QObject
 {
+	Q_OBJECT
 public:
 	enum State {
 		Stopped     = 0,
