@@ -59,6 +59,8 @@ BrisaWebserverSession::BrisaWebserverSession(BrisaWebserver *server,
 	lastSupportedHttpVersion = HttpVersion(1, 1);
 	connect(this, SIGNAL(responsePosted(HttpResponse)), this, SLOT(writeResponse(HttpResponse)));
 	connect(timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
+	connect(getSocket(), SIGNAL(bytesWritten(qint64)),
+			this, SLOT(onSocketBytesWritten(qint64)));
 }
 
 BrisaWebserverSession::~BrisaWebserverSession()
@@ -321,4 +323,9 @@ bool BrisaWebserverSession::keepAlive()
 void BrisaWebserverSession::onTimeout()
 {
 	writeResponse(HttpResponse(HttpVersion(1, 1), HttpResponse::REQUEST_TIMEOUT, true));
+}
+
+void BrisaWebserverSession::onSocketBytesWritten(qint64 sz)
+{
+	emit onSocketBytesWritten(sz, this);
 }

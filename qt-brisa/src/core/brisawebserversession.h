@@ -52,10 +52,12 @@ public:
 signals:
 	void responsePosted(HttpResponse);
 	void onEventReceived(HttpRequest request,BrisaWebserverSession* session);
+	void onSocketBytesWritten(qint64, BrisaWebserverSession*);
 
 public slots:
 	void respond(HttpResponse r, bool chunkedResponse = false);
 	void onTimeout();
+	void onSocketBytesWritten(qint64);
 
 protected:
 	bool hasEntityBody(const HttpRequest &request) throw(HttpResponse);
