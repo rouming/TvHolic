@@ -87,10 +87,12 @@ TvHolic::TvHolic() :
 				MODEL_NAME, MODEL_NUMBER, MODEL_URL,
 				SERIAL_NUMBER, getCompleteUuid()),
 	m_contDirService(new ContentDirectoryService(getAttribute(BrisaDevice::UrlBase))),
-	m_connMngService(new ConnectionManagerService)
+	m_connMngService(new ConnectionManagerService),
+	m_transcoderService(new TranscoderService)
 {
 	addService(m_connMngService);
 	addService(m_contDirService);
+	getWebserver()->addService(QRegExp("/get/.*"), m_transcoderService);
 }
 
 TvHolic::~TvHolic()

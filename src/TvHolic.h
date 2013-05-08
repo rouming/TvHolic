@@ -5,6 +5,7 @@
 
 #include "ConnectionManagerService.h"
 #include "ContentDirectoryService.h"
+#include "TranscoderService.h"
 
 class TvHolic : public Brisa::BrisaDevice
 {
@@ -18,6 +19,7 @@ public:
 private:
 	ContentDirectoryService* m_contDirService;
 	ConnectionManagerService* m_connMngService;
+	TranscoderService* m_transcoderService;
 };
 
 #endif //__TVHOLIC_H__
