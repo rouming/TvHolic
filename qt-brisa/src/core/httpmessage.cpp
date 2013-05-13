@@ -39,9 +39,12 @@ HttpMessage::HttpMessage(const HttpMessage &m) :
 	m_httpVersion(m.m_httpVersion),
 	m_headers(m.m_headers),
 	m_entityBody(m.m_entityBody),
+	m_entitySize(m.m_entitySize),
 	m_range(m.m_range)
 {
-	m.m_entityBody = NULL;
+	HttpMessage &notConstM = const_cast<HttpMessage&>(m);
+	notConstM.m_entityBody = NULL;
+	notConstM.m_entitySize = 0;
 }
 
 HttpMessage::~HttpMessage()
@@ -55,9 +58,12 @@ HttpMessage& HttpMessage::operator=(const HttpMessage &m)
 	m_httpVersion = m.m_httpVersion;
 	m_headers = m.m_headers;
 	m_entityBody = m.m_entityBody;
+	m_entitySize = m.m_entitySize;
 	m_range = m.m_range;
 
-	m.m_entityBody = NULL;
+	HttpMessage &notConstM = const_cast<HttpMessage&>(m);
+	notConstM.m_entityBody = NULL;
+	notConstM.m_entitySize = 0;
 
 	return *this;
 }

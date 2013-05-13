@@ -86,9 +86,9 @@ private:
 	QHash<QByteArray, QByteArray> m_headers;
 
 	mutable QIODevice *m_entityBody;
-	QPair<qlonglong, qlonglong> m_range;
-
 	qint64 m_entitySize;
+
+	QPair<qlonglong, qlonglong> m_range;
 };
 
 } // namespace Brisa
