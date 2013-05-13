@@ -19,7 +19,7 @@ public:
 
 	virtual ~Transcoder() {}
 
-	virtual bool startTranscoding() = 0;
+	virtual bool startTranscoding(const QString& path) = 0;
 	virtual void terminateTranscoding() = 0;
 
 	virtual State process() = 0;

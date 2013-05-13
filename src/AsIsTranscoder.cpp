@@ -30,14 +30,13 @@ AsIsTranscoder::~AsIsTranscoder()
 	}
 }
 
-bool AsIsTranscoder::startTranscoding()
+bool AsIsTranscoder::startTranscoding(const QString& path)
 {
 	if (m_state != Stopped)
 		return false;
 
 	do {
-		//XXX
-		m_fd = ::open("/home/roman/Desktop/GLD.avi", O_CLOEXEC, O_RDONLY);
+		m_fd = ::open(path.toUtf8().constData(), O_CLOEXEC, O_RDONLY);
 	} while (m_fd == -1 && errno == EINTR);
 
 	if (m_fd < 0) {

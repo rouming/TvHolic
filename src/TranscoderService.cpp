@@ -54,5 +54,5 @@ void TranscoderService::onSocketBytesWritten(
 					 transcoder,
 					 SLOT(deleteLater()));
 
-	transcoder->startTranscoding();
+	transcoder->startTranscoding("/home/roman/Desktop/GLD.avi");
 }

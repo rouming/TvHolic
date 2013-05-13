@@ -15,7 +15,7 @@ public:
 	AsIsTranscoder(QTcpSocket&);
 	virtual ~AsIsTranscoder();
 
-	virtual bool startTranscoding();
+	virtual bool startTranscoding(const QString& path);
 	virtual void terminateTranscoding();
 
 	virtual State process();

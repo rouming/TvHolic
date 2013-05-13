@@ -14,7 +14,7 @@ public:
 					   quint32 maxThreshold);
 	virtual ~MencoderTranscoder();
 
-	virtual bool startTranscoding();
+	virtual bool startTranscoding(const QString& path);
 	virtual void terminateTranscoding();
 
 	virtual State process();
