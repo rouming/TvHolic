@@ -23,6 +23,17 @@ void TranscoderService::onRequest(const HttpRequest &request,
 		return;
 	}
 
+	QMutexLocker locker(&m_mutex);
+
+	if (m_sessions.contains(session)) {
+		qWarning("Error: session is already exist, path is %s",
+				 id.toUtf8().constData());
+		return;
+	}
+	m_sessions[session] = id;
+
+	locker.unlock();
+
 	QObject::connect(session,
 					 SIGNAL(onSocketBytesWritten(qint64, BrisaWebserverSession*)),
 					 SLOT(onSocketBytesWritten(qint64, BrisaWebserverSession*)));
@@ -44,7 +55,21 @@ void TranscoderService::onSocketBytesWritten(
 	qint64,
 	BrisaWebserverSession* session)
 {
-	QObject::disconnect(session);
+	if (session->getSocket()->bytesToWrite())
+		return;
+
+	QObject::disconnect(session, 0, this, 0);
+
+	QMutexLocker locker(&m_mutex);
+
+	QFileInfo finfo(m_sessions.take(session));
+
+	if (!finfo.exists() || !finfo.isFile()) {
+		qWarning("Error: session does not exist or file does not exist");
+		return;
+	}
+
+	locker.unlock();
 
 	QTcpSocket *sock = session->getSocket();
 
@@ -54,5 +79,5 @@ void TranscoderService::onSocketBytesWritten(
 					 transcoder,
 					 SLOT(deleteLater()));
 
-	transcoder->startTranscoding("/home/roman/Desktop/GLD.avi");
+	transcoder->startTranscoding(finfo.absoluteFilePath());
 }

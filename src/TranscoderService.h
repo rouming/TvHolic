@@ -18,6 +18,10 @@ protected:
 
 private slots:
 	void onSocketBytesWritten(qint64, BrisaWebserverSession*);
+
+private:
+	QMutex m_mutex;
+	QHash<BrisaWebserverSession*, QString> m_sessions;
 };
 
 #endif //__TRANSCODER_SERVICE_H__
